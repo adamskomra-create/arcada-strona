@@ -232,32 +232,38 @@ body.bez-podgladu .pg-start{{display:none}}
 .spis strong{{display:block;font-weight:500;font-size:16.5px;line-height:1.35}}
 .spis .cicha{{display:block;font-size:13.5px;margin-top:3px}}
 .lista-ob{{display:flex;flex-direction:column;gap:18px}}
-.poz-ob{{display:grid;grid-template-columns:300px minmax(0,1fr) 150px;gap:28px;align-items:start;
+.poz-ob{{display:grid;grid-template-columns:280px minmax(0,1fr) 178px;align-items:stretch;
  text-decoration:none;color:{INK};background:#fff;border:1px solid {LIN};border-radius:18px;
- padding:18px;transition:border-color .18s,transform .18s,box-shadow .18s}}
+ overflow:hidden;transition:border-color .18s,transform .18s,box-shadow .18s}}
 .poz-ob:hover{{border-color:#BFD2C8;transform:translateY(-2px);box-shadow:0 10px 28px rgba(18,22,21,.07)}}
-.poz-foto{{aspect-ratio:4/3;overflow:hidden;background:{SZA};border-radius:12px}}
+.poz-foto{{overflow:hidden;background:{SZA}}}
 .poz-foto img{{width:100%;height:100%;object-fit:cover;display:block}}
-.poz-foto.pusta{{display:flex;align-items:center;justify-content:center;text-align:center;padding:12px}}
-.poz-tr{{padding:6px 0 4px}}
+.poz-foto.pusta{{display:flex;align-items:center;justify-content:center;text-align:center;padding:14px}}
+.poz-tr{{padding:22px 26px 24px;min-height:192px}}
 .poz-tr h3{{font-size:21px;line-height:1.28;margin-bottom:9px}}
 .poz-tr .cicha{{font-size:15px;line-height:1.6}}
 .poz-mat{{margin-top:10px;font-family:'PM';font-size:11.5px;letter-spacing:.08em;
  text-transform:uppercase;color:{MUT};line-height:1.6}}
 .poz-tr .inl{{display:block;margin-top:15px;font-size:14.5px}}
 .poz-tr .plakietka-demo{{display:table;margin-top:12px}}
-.poz-meta{{display:flex;flex-direction:column;gap:9px;align-items:flex-start;padding:6px 0 0;
- text-align:left}}
-.poz-meta .nr{{font-family:'PM';font-size:12.5px;letter-spacing:.1em;color:{MUT}}}
-.poz-meta .st{{font-family:'PM';font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
- padding:5px 11px;border-radius:999px;border:1px solid {LIN};color:{MUT};white-space:nowrap}}
-.poz-meta .st-odebrana{{color:{ZIE};border-color:#BFD2C8;background:#F2F8F5}}
-.poz-meta .zak{{font-family:'PM';font-size:15px;color:{INK};line-height:1.3}}
-@media(max-width:1000px){{.poz-ob{{grid-template-columns:210px minmax(0,1fr);gap:20px}}
- .poz-meta{{grid-column:2;flex-direction:row;align-items:center;gap:12px;flex-wrap:wrap;padding:0}}
- .poz-tr .inl{{margin-top:12px}}}}
+/* prawe pole z datami - osobny blok, nie margines */
+.poz-meta{{background:{SZA};border-left:1px solid {LIN};padding:22px 20px;
+ display:flex;flex-direction:column;justify-content:center;gap:12px;text-align:left}}
+.poz-meta .nr{{font-family:'PM';font-size:12px;letter-spacing:.12em;color:{MUT}}}
+.poz-meta .st{{font-family:'PM';font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+ color:{MUT};align-self:flex-start;padding:5px 10px;border-radius:999px;
+ border:1px solid {LIN};background:#fff;white-space:nowrap}}
+.poz-meta .st-odebrana{{color:{ZIE};border-color:#BFD2C8;background:#EDF5F1}}
+.poz-meta .zak{{font-family:'PM';font-size:16px;color:{INK};line-height:1.35}}
+.poz-meta .zak::before{{content:'Remont';display:block;font-size:10.5px;letter-spacing:.12em;
+ text-transform:uppercase;color:{MUT};margin-bottom:4px}}
+@media(max-width:1000px){{.poz-ob{{grid-template-columns:200px minmax(0,1fr)}}
+ .poz-tr{{min-height:0;padding:18px 20px 16px}}
+ .poz-meta{{grid-column:1 / -1;border-left:0;border-top:1px solid {LIN};
+  flex-direction:row;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 20px}}
+ .poz-meta .zak::before{{display:inline;margin:0 6px 0 0}}}}
 @media(max-width:640px){{.poz-ob{{grid-template-columns:1fr}}
- .poz-meta{{grid-column:1}}}}
+ .poz-foto{{aspect-ratio:16/9}}}}
 @media(max-width:1100px){{.mapa-wszystko{{grid-template-columns:1fr;gap:28px}}
 }}
 .zb.zob{{position:relative;overflow:hidden}}
