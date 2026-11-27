@@ -215,7 +215,7 @@ def p_zespol():
         k=FOTO.get(n)
         if not k:
             return (f'<div class="portret pusty"><span class="m">[ZDJĘCIE]</span></div>')
-        return (f'<div class="portret"><img class="foto" src="img/{k}-foto.webp" alt="{n}" loading="lazy">'
+        return (f'<div class="portret"><img class="foto" src="img/{k}-foto2.webp" alt="{n}" loading="lazy">'
                 f'<img class="szkic" src="img/{k}-szkic.webp" alt="" aria-hidden="true" loading="lazy"></div>')
     kar=''
     dane=[]
