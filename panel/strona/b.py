@@ -284,61 +284,42 @@ body.bez-podgladu .pg-start{{display:none}}
 @media(max-width:900px){{.zb-obraz{{width:100%;opacity:.35}}
  .zb-obraz::before{{background:linear-gradient(180deg,rgba(20,63,51,.86),rgba(20,63,51,.92))}}
  .zb.zob .in{{max-width:none}} .zb-podpis{{display:none}}}}
-/* --- strona obiektu: zdjecie, fakty, historia pod klinieciem --- */
-.ob-sek{{padding-top:30px!important}}
-.ob-wroc{{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;margin-bottom:24px}}
-.ob-nag{{margin-bottom:0}}
-.ob-nag .lead{{font-size:19px;line-height:1.55;max-width:40em;margin:0}}
-.ob-nag .plakietka-demo{{margin-top:14px}}
-
-.ob-foto{{margin:30px 0 0;max-width:820px}}
-.ob-foto img{{border-radius:18px;background:#fff;border:1px solid {LIN};
- width:100%;max-height:520px;object-fit:contain;padding:18px}}
+/* --- strona obiektu: tresc po lewej, dane po prawej --- */
+.ob-sek{{padding-top:28px!important}}
+.ob-okruchy{{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:26px;font-size:14px}}
+.ob-okruchy span{{color:{MUT}}}
+.ob-ukl{{display:grid;grid-template-columns:minmax(0,1fr) 316px;gap:52px;align-items:start}}
+.ob-tresc .lead{{font-size:19.5px;line-height:1.55;max-width:38em;margin:0}}
+.ob-tresc .plakietka-demo{{display:table;margin-top:16px}}
+.ob-foto{{margin:30px 0 0}}
+.ob-foto img{{width:100%;border-radius:18px;background:#fff;border:1px solid {LIN};
+ max-height:520px;object-fit:contain;padding:18px}}
 .ob-foto figcaption{{margin-top:10px;font-family:'PM';font-size:12px;letter-spacing:.09em;
  text-transform:uppercase;color:{MUT}}}
-.ob-foto img{{width:100%;object-fit:cover;display:block}}
-.ob-fakty{{margin:28px 0 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px 32px}}
-.ob-fakty dt{{font-family:'PM';font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:{MUT}}}
-.ob-fakty dd{{margin:6px 0 0;font-size:16px;line-height:1.5}}
-.historia{{margin-top:36px;border:1px solid {LIN};border-radius:18px;background:#fff}}
-.historia summary{{list-style:none;cursor:pointer;display:flex;align-items:center;gap:16px;
- padding:22px 26px;border-radius:18px}}
-.historia summary::-webkit-details-marker{{display:none}}
-.historia summary:hover .hist-tyt{{color:{ZIE}}}
-.hist-tyt{{font-size:19px;font-weight:500}}
-.hist-ile{{font-family:'PM';font-size:12.5px;letter-spacing:.06em;color:{MUT}}}
-.hist-strz{{margin-left:auto;width:11px;height:11px;border-right:2px solid {ZIE};
- border-bottom:2px solid {ZIE};transform:rotate(45deg);transition:transform .2s}}
-.historia[open] .hist-strz{{transform:rotate(-135deg)}}
-.historia[open] summary{{border-bottom:1px solid {LIN};border-radius:18px 18px 0 0}}
-.historia .os{{padding:30px 176px 10px 78px}}
-@media(max-width:1100px){{.ob-fakty{{grid-template-columns:repeat(2,minmax(0,1fr))}}}}
-@media(max-width:900px){{.ob-fakty{{grid-template-columns:1fr}}
- .historia .os{{padding:24px 18px 6px}}
- .historia summary{{flex-wrap:wrap;gap:6px 14px;padding:18px}}}}
-/* --- galeria wpisu: wychodzi poza kolumne tekstu, podpisy pod zdjeciami --- */
-.wpis .g3{{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:24px;margin-right:-150px}}
-.wpis .g3{{align-items:start}}
-.wpis .g3 figure{{margin:0}}
-.wpis .g3 figcaption{{margin-top:10px;font-family:'PM';font-size:11.5px;letter-spacing:.08em;
- text-transform:uppercase;color:{MUT};line-height:1.5}}
-.nasze .wpis .g3{{margin-right:0}}
-.ciek-k .g3.ciek-g{{margin-right:0}}
-@media(max-width:900px){{.wpis .g3,.nasze .wpis .g3{{margin-right:0;grid-template-columns:repeat(2,minmax(0,1fr))}}}}
-/* --- ciekawostka: wyjety akapit z lupa --- */
-.wpis.ciek{{border-top:0;padding:4px 0 26px}}
-.wpis.ciek .kr{{background:#fff;border-color:{ZIE}}}
-.wpis.ciek .data{{color:{MUT}}}
-.wpis.ciek h3{{display:none}}
-.ciek-k{{background:#fff;border:1px solid #D7E3DC;border-radius:16px;padding:20px 24px 22px;
- position:relative}}
-.nasze .ciek-k{{background:#FBFDFC}}
-.ciek-k .et{{display:inline-block;margin-bottom:9px;font-family:'PM';font-size:11.5px;
- letter-spacing:.1em;text-transform:uppercase;color:{ZIE}}}
-.ciek-k h4{{font-size:17px;font-weight:500;line-height:1.35;margin-bottom:8px}}
-.ciek-k p{{font-size:15.5px;line-height:1.62;color:{INK}}}
-.ciek-k .g3.ciek-g{{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:18px}}
-.ciek-k .g3.ciek-g figure div{{aspect-ratio:4 / 3!important}}
+.ob-hist{{margin-top:44px}}
+.ob-hist h2,.ob-dok h2{{font-size:25px;letter-spacing:-.02em}}
+.ob-hist .cicha,.ob-dok .cicha{{margin-top:9px;max-width:40em;font-size:15.5px}}
+.ob-hist .os{{margin-top:30px}}
+.ob-dok{{margin-top:48px;padding-top:38px;border-top:1px solid {LIN}}}
+.dok-siatka{{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:22px;margin-top:24px}}
+.dok-siatka figure{{margin:0}}
+.dok-siatka img{{width:100%;border:1px solid {LIN};border-radius:12px;background:#fff;
+ max-height:360px;object-fit:contain;padding:12px;display:block}}
+.dok-siatka figcaption{{margin-top:9px;font-family:'PM';font-size:11.5px;letter-spacing:.08em;
+ text-transform:uppercase;color:{MUT}}}
+/* prawa kolumna z danymi */
+.ob-dane{{position:sticky;top:18px;background:{SZA};border:1px solid {LIN};border-radius:18px;
+ padding:24px 24px 26px}}
+.dane-tyt{{font-family:'PM';font-size:11.5px;letter-spacing:.11em;text-transform:uppercase;
+ color:{MUT};font-weight:400;margin-bottom:16px}}
+.ob-dane dl{{display:flex;flex-direction:column;gap:14px;margin:0}}
+.ob-dane dt{{font-family:'PM';font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:{MUT}}}
+.ob-dane dd{{margin:4px 0 0;font-size:15.5px;line-height:1.45}}
+.dane-nr{{margin-top:20px;padding-top:16px;border-top:1px solid {LIN};
+ font-family:'PM';font-size:12px;letter-spacing:.1em;color:{MUT}}}
+@media(max-width:1000px){{.ob-ukl{{grid-template-columns:1fr;gap:34px}}
+ .ob-dane{{position:static}}
+ .ob-dane dl{{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:18px 26px}}}}
 /* --- ramka na ciagu wpisow z ich wlasnego remontu --- */
 .nasze{{position:relative;margin:22px 0 26px;padding:14px 26px 8px;
  border:1px solid #CFE0D8;border-left:3px solid {ZIE};border-radius:16px;background:#F5F9F7}}
@@ -510,11 +491,28 @@ if(f)f.addEventListener('submit',function(e){e.preventDefault();var ok=true,br=[
 import datetime as _dt, os as _os
 WERSJA = _os.environ.get('ARCADA_WERSJA') or _dt.datetime.now().strftime('%H:%M %d.%m')
 
-def strona(akt,tytul,opis,zb,tresc):
+DOMENA = 'https://arcadaconcept.pl/strona/'
+
+def strona(akt,tytul,opis,zb,tresc,plik=None,dane=''):
     nav=''.join(f'<a href="{h}"{" aria-current=\"page\"" if h==akt else ""}>{t}</a>' for t,h in STRONY)
+    kanon = DOMENA + (plik or akt)
+    seo = (f'<link rel="canonical" href="{kanon}">'
+           f'<meta property="og:type" content="website">'
+           f'<meta property="og:site_name" content="Arcada Concept">'
+           f'<meta property="og:locale" content="pl_PL">'
+           f'<meta property="og:title" content="{tytul}">'
+           f'<meta property="og:description" content="{opis}">'
+           f'<meta property="og:url" content="{kanon}">'
+           f'<meta name="twitter:card" content="summary_large_image">'
+           f'<meta name="twitter:title" content="{tytul}">'
+           f'<meta name="twitter:description" content="{opis}">'
+           f'<meta name="theme-color" content="{ZIE}">'
+           f'<meta name="geo.region" content="PL-WP">'
+           f'<meta name="author" content="Arcada Concept sp. z o.o.">')
     return ('<!doctype html><html lang="pl"><head><meta charset="utf-8">'
      '<meta name="viewport" content="width=device-width, initial-scale=1">'
      '<meta name="robots" content="noindex,nofollow">'
+     + seo + dane +
      '<meta http-equiv="cache-control" content="no-store, must-revalidate">'
      '<meta http-equiv="pragma" content="no-cache">'
      '<meta http-equiv="expires" content="0">'

@@ -278,19 +278,41 @@ def zbuduj_pliki(out=None):
       ('kontakt.html','Kontakt - Arcada Concept','Napiszcie, co to za budynek i co chcecie zrobić. Odpowiadamy w ciągu dwóch dni roboczych.',p_kontakt)]
   import shutil
   n=0
+  import json as _json
+  FIRMA={"@context":"https://schema.org","@type":"ProfessionalService",
+    "name":"Arcada Concept sp. z o.o.",
+    "description":"Remonty i konserwacja obiektów zabytkowych w całej Polsce: pomiar, "
+                  "dokumentacja, pozwolenia konserwatorskie, dofinansowania i roboty budowlane.",
+    "url":DOMENA,"telephone":"+48693429479","email":"arcada.concept@gmail.com",
+    "address":{"@type":"PostalAddress","streetAddress":"ul. Wrzosowa 3",
+               "postalCode":"62-571","addressLocality":"Żychlin","addressCountry":"PL"},
+    "areaServed":{"@type":"Country","name":"Polska"},
+    "knowsAbout":["konserwacja zabytków","remont zabytku","inwentaryzacja architektoniczna",
+                  "pozwolenie konserwatorskie","dofinansowanie na zabytki","skanowanie laserowe"]}
   for fn,t,d,f in PG:
     zb,tr=f()
-    open(f'{out}/{fn}','w',encoding='utf-8').write(strona(fn,t,d,zb,tr))
+    dd=''
+    if fn=='index.html':
+      dd='<script type="application/ld+json">'+_json.dumps(FIRMA,ensure_ascii=False)+'</script>'
+    elif fn=='realizacje.html' and OBIEKTY_Z_BAZY:
+      lista={"@context":"https://schema.org","@type":"ItemList",
+             "name":"Realizacje Arcada Concept","numberOfItems":len(OBIEKTY_Z_BAZY),
+             "itemListElement":[{"@type":"ListItem","position":k+1,"name":o['tytul'],
+                                 "url":DOMENA+_plik_obiektu(o)}
+                                for k,o in enumerate(OBIEKTY_Z_BAZY)]}
+      dd='<script type="application/ld+json">'+_json.dumps(lista,ensure_ascii=False)+'</script>'
+    open(f'{out}/{fn}','w',encoding='utf-8').write(strona(fn,t,d,zb,tr,plik=fn,dane=dd))
     n+=1
   # osobna strona dla kazdego obiektu z bazy
   if OBIEKTY_Z_BAZY:
     ile=len(OBIEKTY_Z_BAZY)
     for i,o in enumerate(OBIEKTY_Z_BAZY):
       zb,tr=p_obiekt(o,i,ile)
-      tyt=f"{o['tytul']} - Arcada Concept"
+      pl=_plik_obiektu(o)
+      tyt=f"{o['tytul']} - remont zabytku - Arcada Concept"
       op=(o.get('lead') or o.get('podtytul') or '')[:155]
-      open(f"{out}/{_plik_obiektu(o)}",'w',encoding='utf-8').write(
-          strona('realizacje.html',tyt,op,zb,tr))
+      open(f"{out}/{pl}",'w',encoding='utf-8').write(
+          strona('realizacje.html',tyt,op,zb,tr,plik=pl,dane=_dane_obiektu(o,pl)))
       n+=1
   # narzedzie robocze: podglad na telefonie i tablecie
   try:
@@ -299,6 +321,19 @@ def zbuduj_pliki(out=None):
     n+=1
   except Exception as e:
     print('podglad pominiety:',e)
+  # mapa witryny
+  import datetime as _dt
+  dzis=_dt.date.today().isoformat()
+  adresy=[(DOMENA+fn,'1.0' if fn=='index.html' else '0.8') for fn,_,_,_ in PG]
+  if OBIEKTY_Z_BAZY:
+    adresy+= [(DOMENA+_plik_obiektu(o),'0.7') for o in OBIEKTY_Z_BAZY]
+  mapa=('<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        + ''.join(f'  <url><loc>{u}</loc><lastmod>{dzis}</lastmod>'
+                  f'<changefreq>monthly</changefreq><priority>{p}</priority></url>\n'
+                  for u,p in adresy)
+        + '</urlset>\n')
+  open(f'{out}/sitemap.xml','w',encoding='utf-8').write(mapa); n+=1
   here=os.path.dirname(os.path.abspath(__file__))
   for k in ('img','fonts'):
     zrodlo=os.path.join(here,k)
@@ -463,35 +498,89 @@ def _rysunek(o):
         if x.get('rola')=='rysunek': return x['plik'], (x.get('podpis') or 'Rysunek inwentaryzacyjny')
     return None,''
 
+def _dokumenty(o):
+    z=[x for x in (o.get('zdjecia') or []) if x.get('rola')=='dokument']
+    if not z: return ''
+    k=''.join(f'<figure><img src="img/{x["plik"]}" alt="{x["alt"]}" loading="lazy">'
+              f'<figcaption>{x["podpis"]}</figcaption></figure>' for x in z[:4])
+    return (f'<section class="ob-dok"><h2>Dokumentacja</h2>'
+            f'<p class="cicha">Co zostaje po odbiorze i czym można się posłużyć przy rozliczeniu.</p>'
+            f'<div class="dok-siatka">{k}</div></section>')
+
+def _nawiguj(o):
+    if not (o.get('adres') and (o.get('cel_mapy') or (o.get('lat') and o.get('lon')))): return ''
+    from urllib.parse import quote
+    cel=o.get('cel_mapy')
+    pkt=quote(cel) if cel else f'{o["lat"]}%2C{o["lon"]}'
+    return (f'<a class="btn" style="min-height:42px;padding:0 16px;font-size:14px;margin-top:4px" '
+            f'href="https://www.google.com/maps/dir/?api=1&destination={pkt}" '
+            f'target="_blank" rel="noopener">Nawiguj</a>')
+
+def _nasz_okres(o):
+    w=[x for x in (o.get('wpisy') or []) if x.get('rodzaj')=='my']
+    if not w: return ''
+    p,k=w[0]['data'],w[-1]['data']
+    return p if p==k else f'{p} - {k}'
+
 def p_obiekt(o,i,ile):
     rys,podp=_rysunek(o)
-    f=_oklad(o)                       # zdjecie idzie w naglowek
-    drugi=rys                         # rysunek schodzi nizej, zeby sie nie powtarzac
-    hero=(f'<figure class="ob-foto"><img src="img/{drugi}" alt="{podp or o["tytul"]}">'
-          f'<figcaption>{podp}</figcaption></figure>' if drugi else '')
+    f=_oklad(o)
+    rysunek=(f'<figure class="ob-foto"><img src="img/{rys}" alt="{podp or o["tytul"]}">'
+             f'<figcaption>{podp}</figcaption></figure>' if rys else '')
     pola=[('Status',ETYKIETY.get(o['status'],o['status'])),
+          ('Okres prac',_nasz_okres(o)),
           ('Zakres',o.get('material') or ''),
           ('Gdzie',_miejsce(o)),
           ('Inwestor',o.get('inwestor') or ''),
+          ('Tryb',o.get('tryb') or ''),
           ('Nadzór',o.get('nadzor') or ''),
           ('Rejestr zabytków',o.get('rejestr') or ''),
+          ('Pozwolenie',o.get('pozwolenie') or ''),
           ('Finansowanie',o.get('finansowanie') or '')]
+    if o.get('wartosc') and o.get('pokaz_wartosc'):
+        pola.append(('Wartość kontraktu',o['wartosc']))
     fakty=''.join(f'<div><dt>{k}</dt><dd>{v}</dd></div>' for k,v in pola if v)
-    plak=('<span class="plakietka-demo">wizualizacja poglądowa · obiekt fikcyjny</span>'
+    plak=('<p class="plakietka-demo">wizualizacja poglądowa · obiekt fikcyjny</p>'
           if o.get('demo') else '')
     lead=f'<p class="lead">{o["lead"]}</p>' if o.get('lead') else ''
     n=len(o.get('wpisy') or [])
-    hist=(f'<details class="historia"><summary><span class="hist-tyt">Historia obiektu</span>'
-          f'<span class="hist-ile">{_wpisow(n)} · od {o["wpisy"][0]["data"]} do {o["wpisy"][-1]["data"]}</span>'
-          f'<span class="hist-strz" aria-hidden="true"></span></summary>'
-          f'<div class="os">{_os(o)}</div></details>') if n else ''
+    hist=(f'<section class="ob-hist"><h2>Historia obiektu</h2>'
+          f'<p class="cicha">Budynek stoi dłużej niż my. Nasz remont to jeden z datowanych '
+          f'wpisów w jego życiorysie - {_wpisow(n)} od {o["wpisy"][0]["data"]}.</p>'
+          f'<div class="os">{_os(o)}</div></section>') if n else ''
     sek=(f'<section class="ob-sek"><div class="w">'
-         f'<p class="ob-wroc"><a class="inl" href="realizacje.html">← Wszystkie realizacje</a>'
-         f'<span class="m">{i+1:02d} z {ile:02d} · '
-         f'{ETYKIETY.get(o["status"],o["status"])}</span></p>'
-         f'<div class="nag ob-nag">{lead}{plak}</div>'
-         f'{hero}'
-         f'<dl class="ob-fakty">{fakty}</dl>'
-         f'{hist}</div></section>')
+         f'<nav class="ob-okruchy" aria-label="Ścieżka">'
+         f'<a class="inl" href="index.html">Start</a><span>/</span>'
+         f'<a class="inl" href="realizacje.html">Realizacje</a><span>/</span>'
+         f'<span class="m">{o["tytul"]}</span></nav>'
+         f'<div class="ob-ukl">'
+         f'<div class="ob-tresc">{lead}{plak}{rysunek}{hist}{_dokumenty(o)}</div>'
+         f'<aside class="ob-dane" aria-label="Dane realizacji">'
+         f'<h2 class="dane-tyt">Dane realizacji</h2>'
+         f'<dl>{fakty}</dl>{_nawiguj(o)}'
+         f'<p class="dane-nr">{i+1:02d} z {ile:02d}</p></aside>'
+         f'</div></div></section>')
     return (blok('Realizacja',o['tytul'],o.get('podtytul') or '',cta=False,maly=True,
                  obraz=f,podpis=''), sek)
+
+def _dane_obiektu(o,plik):
+    """JSON-LD: okruszki i sam obiekt - pod wyniki rozszerzone w Google."""
+    import json
+    adres=(o.get('adres') or '').replace('<br>',', ')
+    miejsce={"@type":"Place","name":o['tytul'],
+             "address":{"@type":"PostalAddress","addressLocality":adres,"addressCountry":"PL"}}
+    if o.get('lat') and o.get('lon'):
+        miejsce["geo"]={"@type":"GeoCoordinates","latitude":o['lat'],"longitude":o['lon']}
+    proj={"@context":"https://schema.org","@type":"CreativeWork",
+          "name":o['tytul'],"description":(o.get('lead') or '')[:300],
+          "url":DOMENA+plik,
+          "creator":{"@type":"Organization","name":"Arcada Concept sp. z o.o.",
+                     "url":DOMENA,"areaServed":"PL"},
+          "contentLocation":miejsce}
+    if o.get('material'): proj["keywords"]=o['material']
+    okr={"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+         {"@type":"ListItem","position":1,"name":"Start","item":DOMENA+"index.html"},
+         {"@type":"ListItem","position":2,"name":"Realizacje","item":DOMENA+"realizacje.html"},
+         {"@type":"ListItem","position":3,"name":o['tytul'],"item":DOMENA+plik}]}
+    return ('<script type="application/ld+json">'+json.dumps(proj,ensure_ascii=False)+'</script>'
+            '<script type="application/ld+json">'+json.dumps(okr,ensure_ascii=False)+'</script>')
