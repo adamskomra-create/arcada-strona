@@ -263,6 +263,8 @@ a.inl{{display:inline-flex;align-items:center;min-height:44px;color:{ZIE};text-d
  letter-spacing:.1em;text-transform:uppercase;color:{ZIE}}}
 .ciek-k h4{{font-size:17px;font-weight:500;line-height:1.35;margin-bottom:8px}}
 .ciek-k p{{font-size:15.5px;line-height:1.62;color:{INK}}}
+.ciek-k .g3.ciek-g{{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:18px}}
+.ciek-k .g3.ciek-g figure div{{aspect-ratio:4 / 3!important}}
 /* --- ramka na ciagu wpisow z ich wlasnego remontu --- */
 .nasze{{position:relative;margin:22px 0 26px;padding:14px 26px 8px;
  border:1px solid #CFE0D8;border-left:3px solid {ZIE};border-radius:16px;background:#F5F9F7}}

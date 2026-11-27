@@ -316,17 +316,18 @@ def _tabela(o):
     return (f'<table style="margin-top:26px"><caption class="sr">Dane realizacji: {o["tytul"]}</caption>'
             f'<tbody>{"".join(w)}</tbody></table>')
 
-def _galeria(o,wid=None):
-    """Zdjęcia przypięte do wpisu, a gdy ich nie ma - nieprzypisane detale obiektu."""
+def _galeria(o,wid=None,scisle=False):
+    """Zdjęcia przypięte do wpisu. scisle=True - bez podmiany na nieprzypisane detale,
+    żeby ciekawostka nie pokazywała cudzych zdjęć, gdy jeszcze nie ma własnych."""
     z=[x for x in o['zdjecia'] if x['wpis_id']==wid and x['rola'] in ('detal','rysunek','dokument')]
-    if not z:
+    if not z and not scisle:
         z=[x for x in o['zdjecia'] if x['wpis_id'] is None and x['rola'] in ('detal','rysunek','dokument')]
     if not z: return ''
     k=''.join(f'<figure><div style="aspect-ratio:4 / 5;overflow:hidden;background:{SZA}">'
               f'<img src="img/{x["plik"]}" alt="{x["alt"]}" loading="lazy" '
               f'style="object-position:{x["kadr"]}"></div>'
               f'<figcaption>{x["podpis"]}</figcaption></figure>' for x in z[:6])
-    return f'<div class="g3" style="margin-top:20px">{k}</div>'
+    return f'<div class="g3{" ciek-g" if scisle else ""}" style="margin-top:20px">{k}</div>'
 
 def _porownanie(o):
     p=[x for x in o['zdjecia'] if x['rola']=='przed']
@@ -365,7 +366,7 @@ def _os(o):
                             cel=o.get('cel_mapy') or None, epoka=o.get('epoka_mapy') or None)
         elif w['blok']=='tabela':  dod=_tabela(o)
         elif w['blok']=='porownanie': dod=_porownanie(o)+_galeria(o)
-        elif w['blok']=='galeria': dod=_galeria(o,w['id'])
+        elif w['blok']=='galeria': dod=_galeria(o,w['id'],scisle=(kl=='ciek'))
         kawalek=wpis(w['data'],w['tytul'],opis,kl,dod)
         if kl=='my':
             bufor.append(kawalek); _bufdane.append(w)

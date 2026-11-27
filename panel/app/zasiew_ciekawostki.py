@@ -69,7 +69,7 @@ def dopisz(db):
             db.execute('UPDATE wpis SET kolejnosc=kolejnosc+1 WHERE realizacja_id=? AND kolejnosc>=?',
                        (rid, poz))
             db.execute("""INSERT INTO wpis(realizacja_id,data,tytul,opis,rece,rodzaj,blok,kolejnosc,demo)
-                          VALUES(?,?,?,?,'','ciekawostka','',?,1)""", (rid, data, tyt, opis, poz))
+                          VALUES(?,?,?,?,'','ciekawostka','galeria',?,1)""", (rid, data, tyt, opis, poz))
             n+=1
     db.commit()
     return n
