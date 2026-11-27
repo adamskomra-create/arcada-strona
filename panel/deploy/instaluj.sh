@@ -32,6 +32,34 @@ sleep 4
 docker exec arcada-panel python -c "import urllib.request;urllib.request.urlopen('http://127.0.0.1:8080/zdrowie').read()" \
   && ok "Panel działa" || die "Panel nie odpowiada: docker logs arcada-panel"
 
+# --- zasiew: tylko gdy baza jest pusta, nigdy nie nadpisuje danych klienta ---
+ZIARNO=$APP/panel/zasiew-zdjecia
+PUSTA=$(docker exec arcada-panel python -c "
+import sqlite3
+try:
+    d=sqlite3.connect('/dane/arcada.db')
+    print(d.execute('select count(*) from realizacja').fetchone()[0])
+except Exception: print(0)
+" 2>/dev/null || echo 0)
+if [ "$PUSTA" = "0" ]; then
+  mkdir -p "$DANE/zdjecia"
+  docker cp "$ZIARNO/." arcada-panel:/ziarno >/dev/null
+  for S in zasiew_prawdziwe zasiew wczytaj_zdjecia; do
+    docker exec -e ARCADA_ZRODLA=/ziarno/demo -e ARCADA_ZRODLA_REAL=/ziarno/prawdziwe \
+      arcada-panel python /app/app/$S.py >/dev/null 2>&1 || die "Zasiew przerwany na $S"
+  done
+  docker exec arcada-panel python -c "
+import sys; sys.path.insert(0,'/app/app')
+from baza import zaloz
+from budowa import zbuduj
+zbuduj(zaloz())
+" >/dev/null 2>&1 || die "Zasiew wszedl, ale strona sie nie przebudowala"
+  docker exec arcada-panel rm -rf /ziarno >/dev/null 2>&1 || true
+  ok "Baza zasiana: 2 obiekty prawdziwe + 5 demo (klient kasuje je w panelu jednym przyciskiem)"
+else
+  ok "Baza ma juz $PUSTA obiektow - zasiewu nie uruchamiam"
+fi
+
 SRC=$(docker inspect "$CADDY" --format '{{range .Mounts}}{{if eq .Destination "/etc/caddy/Caddyfile"}}{{.Source}}{{end}}{{end}}')
 [ -n "$SRC" ] && [ -f "$SRC" ] || die "Nie znalazłem Caddyfile"
 if grep -q "handle /panel" "$SRC"; then

@@ -4,7 +4,7 @@ import sys, os, shutil
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from baza import zaloz, log
 
-ZRODLO_IMG = '/home/claude/w4/img'
+ZRODLO_IMG = os.environ.get('ARCADA_ZRODLA_REAL', '/home/claude/w4/img')
 ZDJECIA = os.environ.get('ARCADA_ZDJECIA', '/home/claude/panel/dane/zdjecia')
 
 OBIEKTY = [

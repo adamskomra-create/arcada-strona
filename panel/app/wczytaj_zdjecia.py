@@ -4,7 +4,7 @@ import sys, os, shutil
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from baza import zaloz, log
 
-ZRODLA = '/home/claude/panel/zrodla'
+ZRODLA = os.environ.get('ARCADA_ZRODLA', '/home/claude/panel/zrodla')
 ZDJECIA = os.environ.get('ARCADA_ZDJECIA', '/home/claude/panel/dane/zdjecia')
 os.makedirs(ZDJECIA, exist_ok=True)
 
