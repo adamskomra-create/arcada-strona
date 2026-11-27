@@ -507,6 +507,9 @@ if(f)f.addEventListener('submit',function(e){e.preventDefault();var ok=true,br=[
  if(!ok){er.hidden=false;er.textContent='Uzupełnijcie: '+br.join(', ')+'.';var p=f.querySelector('.zle');if(p)p.focus();return}
  er.hidden=true;f.hidden=true;var o=document.getElementById('kok');o.hidden=false;o.focus()});
 """
+import datetime as _dt, os as _os
+WERSJA = _os.environ.get('ARCADA_WERSJA') or _dt.datetime.now().strftime('%H:%M %d.%m')
+
 def strona(akt,tytul,opis,zb,tresc):
     nav=''.join(f'<a href="{h}"{" aria-current=\"page\"" if h==akt else ""}>{t}</a>' for t,h in STRONY)
     return ('<!doctype html><html lang="pl"><head><meta charset="utf-8">'
@@ -532,7 +535,8 @@ def strona(akt,tytul,opis,zb,tresc):
      '<a class="inl" href="tel:+48693429479">693 429 479</a><a class="inl" href="mailto:arcada.concept@gmail.com">arcada.concept@gmail.com</a></div></div>'
      '<div><div class="m">Siedziba</div><div style="margin-top:10px;font-size:14.5px;line-height:1.55">ul. Wrzosowa 3<br>62-571 Żychlin</div></div>'
      '</div></div>'
-     '<div class="fdol"><span class="m">Arcada Concept sp. z o.o. · remonty obiektów zabytkowych</span>'
+     '<div class="fdol"><span class="m">Arcada Concept sp. z o.o. · remonty obiektów zabytkowych · '
+     f'wersja {WERSJA}</span>'
      '<span class="m">NIP 665 305 91 60 · KRS 0001051640</span></div></div></footer>'
      '<div class="nowa-wersja" id="nowaW">Nowa wersja strony - odświeżam\u2026</div>'
      '<button class="pg-start" id="pgStart" type="button" aria-haspopup="dialog">'
