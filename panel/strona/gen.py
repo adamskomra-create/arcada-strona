@@ -417,20 +417,32 @@ def p_realizacje_z_bazy(obiekty):
                   for i,o in enumerate(obiekty))
           + f'</ol></div></div></div></section>') if pkt else ''
 
+    def _nasz_zakres(o):
+        w=[x for x in (o.get('wpisy') or []) if x.get('rodzaj')=='my']
+        if not w: return ''
+        p,k=w[0]['data'],w[-1]['data']
+        return p if p==k else f'{p} - {k}'
     kar=''
     for i,o in enumerate(obiekty):
         f=_oklad(o)
-        obraz=(f'<div class="kar-foto"><img src="img/{f}" alt="{o["tytul"]}" loading="lazy"></div>'
-               if f else f'<div class="kar-foto pusta"><span class="m">zdjęcia w przygotowaniu</span></div>')
+        obraz=(f'<div class="poz-foto"><img src="img/{f}" alt="{o["tytul"]}" loading="lazy"></div>'
+               if f else '<div class="poz-foto pusta"><span class="m">zdjęcia w przygotowaniu</span></div>')
         plak=('<span class="plakietka-demo">obiekt fikcyjny</span>' if o.get('demo') else '')
         lead=o.get('lead') or ''
-        if len(lead)>140: lead=lead[:137].rsplit(' ',1)[0]+'…'
-        kar+=(f'<a class="kar-ob" href="{_plik_obiektu(o)}">{obraz}'
-              f'<div class="kar-tr"><span class="m">{i+1:02d} · {ETYKIETY.get(o["status"],o["status"])}</span>'
-              f'<h3>{o["tytul"]}</h3><p class="cicha">{lead}</p>{plak}'
-              f'<span class="inl">Zobacz obiekt</span></div></a>')
+        if len(lead)>190: lead=lead[:187].rsplit(' ',1)[0]+'…'
+        mat=f'<p class="poz-mat">{o["material"]}</p>' if o.get('material') else ''
+        zak=_nasz_zakres(o)
+        kar+=(f'<a class="poz-ob" href="{_plik_obiektu(o)}">{obraz}'
+              f'<div class="poz-tr"><h3>{o["tytul"]}</h3>'
+              f'<p class="cicha">{lead}</p>{mat}{plak}'
+              f'<span class="inl">Zobacz obiekt</span></div>'
+              f'<div class="poz-meta"><span class="nr">{i+1:02d}</span>'
+              f'<span class="st st-{o["status"].replace(" ","-")}">'
+              f'{ETYKIETY.get(o["status"],o["status"])}</span>'
+              + (f'<span class="zak">{zak}</span>' if zak else '')
+              + '</div></a>')
     siatka=(f'<section class="szara"><div class="w"><div class="nag" style="margin-bottom:26px">'
-            f'<h2>Obiekty</h2></div><div class="siatka-ob">{kar}</div></div></section>'
+            f'<h2>Obiekty</h2></div><div class="lista-ob">{kar}</div></div></section>'
             if kar else
             '<section><div class="w"><div class="nag"><h2>Portfolio w budowie</h2>'
             '<p class="lead">Obiekty pojawią się tu, gdy tylko zostaną wprowadzone.</p></div></div></section>')
