@@ -227,8 +227,11 @@ a.inl{{display:inline-flex;align-items:center;min-height:44px;color:{ZIE};text-d
  .zb-obraz::before{{background:linear-gradient(180deg,rgba(20,63,51,.86),rgba(20,63,51,.92))}}
  .zb.zob .in{{max-width:none}} .zb-podpis{{display:none}}}}
 /* --- strona obiektu: zdjecie, fakty, historia pod klinieciem --- */
-.ob-foto{{margin:26px 0 0;border-radius:20px;overflow:hidden;background:{SZA};aspect-ratio:3/2}}
-.ob-foto img{{width:100%;height:100%;object-fit:cover;display:block}}
+.ob-foto{{margin:30px 0 0}}
+.ob-foto img{{border-radius:20px;background:{SZA};aspect-ratio:3/2}}
+.ob-foto figcaption{{margin-top:10px;font-family:'PM';font-size:12px;letter-spacing:.09em;
+ text-transform:uppercase;color:{MUT}}}
+.ob-foto img{{width:100%;object-fit:cover;display:block}}
 .ob-fakty{{margin:28px 0 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px 32px}}
 .ob-fakty dt{{font-family:'PM';font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:{MUT}}}
 .ob-fakty dd{{margin:6px 0 0;font-size:16px;line-height:1.5}}

@@ -430,17 +430,17 @@ def _wpisow(n):
     return f'{n} wpisy' if (2<=r<=4 and not 12<=rr<=14) else f'{n} wpisów'
 
 def _rysunek(o):
-    """Do naglowka: najpierw rysunek techniczny, potem zdjecie 'po'."""
-    for rola in ('rysunek',):
-        for x in (o.get('zdjecia') or []):
-            if x.get('rola')==rola: return x['plik'],'Rysunek inwentaryzacyjny'
-    f=_oklad(o)
-    return (f,'') if f else (None,'')
+    """Rysunek techniczny obiektu, jesli jest."""
+    for x in (o.get('zdjecia') or []):
+        if x.get('rola')=='rysunek': return x['plik'], (x.get('podpis') or 'Rysunek inwentaryzacyjny')
+    return None,''
 
 def p_obiekt(o,i,ile):
-    f=_oklad(o)
     rys,podp=_rysunek(o)
-    hero=(f'<div class="ob-foto"><img src="img/{f}" alt="{o["tytul"]}"></div>' if f else '')
+    f=_oklad(o)                       # zdjecie idzie w naglowek
+    drugi=rys                         # rysunek schodzi nizej, zeby sie nie powtarzac
+    hero=(f'<figure class="ob-foto"><img src="img/{drugi}" alt="{podp or o["tytul"]}">'
+          f'<figcaption>{podp}</figcaption></figure>' if drugi else '')
     pola=[('Status',ETYKIETY.get(o['status'],o['status'])),
           ('Zakres',o.get('material') or ''),
           ('Gdzie',_miejsce(o)),
@@ -466,4 +466,4 @@ def p_obiekt(o,i,ile):
          f'<dl class="ob-fakty">{fakty}</dl>'
          f'{hist}</div></section>')
     return (blok('Realizacja',o['tytul'],o.get('podtytul') or '',cta=False,maly=True,
-                 obraz=rys,podpis=podp), sek)
+                 obraz=f,podpis=''), sek)
