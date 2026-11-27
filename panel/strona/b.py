@@ -109,6 +109,19 @@ a.inl{{display:inline-flex;align-items:center;min-height:44px;color:{ZIE};text-d
 .rece{{display:block;margin-top:10px;font-family:'PM';font-size:11px;letter-spacing:.13em;
  text-transform:uppercase;color:{MUT}}}
 .wpis.my .rece{{color:{ZIE}}}
+/* --- pasek roboczy: przelacznik urzadzen, nad naglowkiem --- */
+.pasek-p{{position:sticky;top:0;z-index:60;background:{ZIED};color:{KREM};
+ display:flex;align-items:center;gap:14px;padding:8px 20px;font-size:13px;flex-wrap:wrap}}
+.pasek-p .et{{font-family:'PM';font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.7}}
+.pasek-p .gr{{display:flex;gap:4px;background:rgba(242,245,243,.09);padding:3px;border-radius:10px}}
+.pasek-p .gr a{{padding:6px 13px;border-radius:7px;text-decoration:none;
+ color:rgba(242,245,243,.85);font-size:13px}}
+.pasek-p .gr a:hover{{background:rgba(242,245,243,.14);color:{KREM}}}
+.pasek-p .ukryj{{margin-left:auto;background:none;border:1px solid rgba(242,245,243,.3);
+ color:{KREM};font:inherit;font-size:12.5px;padding:6px 12px;border-radius:8px;cursor:pointer}}
+.pasek-p .ukryj:hover{{background:rgba(242,245,243,.12)}}
+body.bez-paska .pasek-p{{display:none}}
+@media print{{.pasek-p{{display:none}}}}
 /* --- portret: rysunek przenika zdjęcie tylko pod kursorem --- */
 @property --ps{{syntax:'<number>';inherits:true;initial-value:0}}
 .portret{{position:relative;aspect-ratio:4/5;overflow:hidden;background:{SZA};
@@ -315,6 +328,22 @@ footer a.inl{{color:{KREM};min-height:40px}}
 """
 JS=r"""
 (function(){
+ var p=document.getElementById('paskp'); if(!p) return;
+ try{ if(localStorage.getItem('arcada-pasek')==='0') document.body.classList.add('bez-paska'); }catch(e){}
+ var u=document.getElementById('ukryjp');
+ if(u) u.addEventListener('click',function(){
+   document.body.classList.add('bez-paska');
+   try{ localStorage.setItem('arcada-pasek','0'); }catch(e){}
+ });
+ var tu=location.pathname.split('/').pop()||'index.html';
+ [].forEach.call(p.querySelectorAll('.gr a'),function(a){
+   var url=new URL(a.getAttribute('href'),location.href);
+   url.searchParams.set('p',tu);
+   a.setAttribute('href',url.pathname+url.search);
+ });
+})();
+
+(function(){
  var z=document.getElementById('zesp'), inf=document.getElementById('zinfo'),
      dz=document.getElementById('zdane');
  if(!z||!inf||!dz) return;
@@ -393,6 +422,14 @@ def strona(akt,tytul,opis,zb,tresc):
      '<meta name="robots" content="noindex,nofollow">'
      f'<title>{tytul}</title><meta name="description" content="{opis}">'
      f'<style>{CSS}</style></head><body>'
+     '<div class="pasek-p" id="paskp"><span class="et">Podgląd</span>'
+     '<span class="gr">'
+     '<a href="podglad.html?s=telefon" data-u="telefon">Telefon</a>'
+     '<a href="podglad.html?s=tabletp" data-u="tabletp">Tablet</a>'
+     '<a href="podglad.html?s=laptop" data-u="laptop">Laptop</a>'
+     '<a href="podglad.html" data-u="pelna">Wszystkie</a>'
+     '</span>'
+     '<button class="ukryj" type="button" id="ukryjp">Ukryj</button></div>'
      '<a class="skip" href="#main">Przejdź do treści</a>'
      f'<header><div class="w hin"><a href="index.html" aria-label="Arcada Concept, strona główna">{logo(30)}</a>'
      f'<nav class="gl" aria-label="Główne">{nav}</nav>'

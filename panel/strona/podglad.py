@@ -70,6 +70,7 @@ iframe{{display:block;border:0;width:100%;height:100%;background:#fff}}
 <div class="scena pelna" id="scena"><div class="ramka" id="ramka"><iframe id="pod" src="index.html"></iframe></div></div>
 <script>
 (function(){{
+ var q=new URLSearchParams(location.search);
  var str=document.getElementById('str'), pod=document.getElementById('pod'),
      scena=document.getElementById('scena'), ramka=document.getElementById('ramka'),
      miara=document.getElementById('miara'), obrot=document.getElementById('obrot'),
@@ -98,6 +99,11 @@ iframe{{display:block;border:0;width:100%;height:100%;background:#fff}}
    if(str.value!==a){{ for(var i=0;i<str.options.length;i++) if(str.options[i].value===a) str.selectedIndex=i; }}
   }}catch(e){{}}
  }});
+ // start z parametrow: ?p=strona.html&s=telefon
+ var pp=q.get('p');
+ if(pp){{ for(var i=0;i<str.options.length;i++) if(str.options[i].value===pp){{ str.selectedIndex=i; pod.src=pp; break; }} }}
+ var ss=q.get('s');
+ if(ss){{ var bt=document.querySelector('#urz button[data-u="'+ss+'"]'); if(bt) bt.click(); }}
  zastosuj();
 }})();
 </script></body></html>"""
