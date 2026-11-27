@@ -107,19 +107,19 @@ a.inl{{display:inline-flex;align-items:center;min-height:44px;color:{ZIE};text-d
 .rece{{display:block;margin-top:10px;font-family:'PM';font-size:11px;letter-spacing:.13em;
  text-transform:uppercase;color:{MUT}}}
 .wpis.my .rece{{color:{ZIE}}}
-/* --- portret: kursor prześwietla zdjęcie jak latarka, pod spodem łuki --- */
-@property --ps{{syntax:'<number>';inherits:true;initial-value:1}}
+/* --- portret: rysunek przenika zdjęcie tylko pod kursorem --- */
+@property --ps{{syntax:'<number>';inherits:true;initial-value:0}}
 .portret{{position:relative;aspect-ratio:4/5;overflow:hidden;background:{SZA};
- --px:50%;--py:50%;--ps:1;cursor:crosshair}}
+ --px:50%;--py:50%;--ps:0;cursor:crosshair}}
 .portret img{{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 18%}}
-.portret .foto{{
+.portret .szkic{{mix-blend-mode:multiply;
  -webkit-mask-image:radial-gradient(circle at var(--px) var(--py),
-   rgba(0,0,0,var(--ps)) 0 4mm, rgba(0,0,0,calc(var(--ps)*.45 + .55)) 7mm, #000 11mm);
+   rgba(0,0,0,var(--ps)) 0 4mm, rgba(0,0,0,calc(var(--ps)*.5)) 7mm, rgba(0,0,0,0) 11mm);
  mask-image:radial-gradient(circle at var(--px) var(--py),
-   rgba(0,0,0,var(--ps)) 0 4mm, rgba(0,0,0,calc(var(--ps)*.45 + .55)) 7mm, #000 11mm);
- transition:--ps .2s linear}}
-.portret.swieci{{--ps:.26}}
-@media (hover:none){{.portret{{cursor:default}} .portret.swieci{{--ps:1}}}}
+   rgba(0,0,0,var(--ps)) 0 4mm, rgba(0,0,0,calc(var(--ps)*.5)) 7mm, rgba(0,0,0,0) 11mm);
+ transition:--ps .22s linear}}
+.portret.swieci{{--ps:.82}}
+@media (hover:none){{.portret{{cursor:default}} .portret.swieci{{--ps:0}}}}
 .plakietka-demo{{display:inline-block;margin-top:14px;font-family:'PM';font-size:11.5px;
  letter-spacing:.14em;text-transform:uppercase;color:#6B4310;background:#FDF6EC;
  border:1px solid #EBD5B3;border-radius:3px;padding:5px 10px}}
@@ -144,6 +144,45 @@ a.inl{{display:inline-flex;align-items:center;min-height:44px;color:{ZIE};text-d
 .wpis.my .kr{{background:{ZIE};border-color:{ZIE};box-shadow:0 0 0 5px #E4EEE9}}
 .wpis.my .data{{color:{ZIE};font-weight:500}}
 .wpis.pusty .data,.wpis.pusty h3{{color:{MUT}}}
+/* --- listing realizacji: mapa zbiorcza i karty obiektow --- */
+.mapa-wszystko{{display:grid;grid-template-columns:560px 1fr;gap:48px;align-items:start}}
+.mapa-wszystko a .pkt{{transition:r .18s}}
+.mapa-wszystko a:hover .pkt{{r:8}}
+.spis{{list-style:none;margin:20px 0 0;padding:0;counter-reset:none}}
+.spis li{{border-top:1px solid {LIN}}}
+.spis li:first-child{{border-top:0}}
+.spis a{{display:flex;gap:16px;align-items:baseline;padding:12px 0;text-decoration:none;color:{INK}}}
+.spis a:hover strong{{color:{ZIE}}}
+.spis .nr{{font-family:'PM';font-size:12.5px;color:{MUT};letter-spacing:.08em;min-width:26px}}
+.spis strong{{display:block;font-weight:500;font-size:16.5px;line-height:1.35}}
+.spis .cicha{{display:block;font-size:13.5px;margin-top:3px}}
+.siatka-ob{{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}}
+.kar-ob{{display:flex;flex-direction:column;text-decoration:none;color:{INK};background:#fff;border:1px solid {LIN};
+ border-radius:18px;overflow:hidden;transition:border-color .18s,transform .18s,box-shadow .18s}}
+.kar-ob:hover{{border-color:#BFD2C8;transform:translateY(-3px);box-shadow:0 10px 28px rgba(18,22,21,.07)}}
+.kar-foto{{aspect-ratio:4/3;overflow:hidden;background:{SZA}}}
+.kar-foto img{{width:100%;height:100%;object-fit:cover;display:block}}
+.kar-foto.pusta{{display:flex;align-items:center;justify-content:center}}
+.kar-tr{{padding:20px 22px 24px;display:flex;flex-direction:column;flex:1}}
+.kar-tr h3{{margin:8px 0 8px;font-size:19px;line-height:1.3}}
+.kar-tr .cicha{{font-size:14.5px;line-height:1.55}}
+.kar-tr .inl{{display:block;margin-top:auto;padding-top:16px;font-size:14.5px}}
+.kar-ob .plakietka-demo{{align-self:flex-start;margin-top:12px}}
+@media(max-width:1100px){{.mapa-wszystko{{grid-template-columns:1fr;gap:28px}}
+ .siatka-ob{{grid-template-columns:repeat(2,minmax(0,1fr))}}}}
+@media(max-width:700px){{.siatka-ob{{grid-template-columns:1fr}}}}
+/* --- ramka na ciagu wpisow z ich wlasnego remontu --- */
+.nasze{{position:relative;margin:22px 0 26px;padding:14px 26px 8px;
+ border:1px solid #CFE0D8;border-left:3px solid {ZIE};border-radius:16px;background:#F5F9F7}}
+.nasze-tag{{display:inline-block;margin-bottom:6px;padding:5px 12px;border-radius:999px;
+ background:{ZIE};color:#fff;font-family:'PM';font-size:12px;letter-spacing:.09em;text-transform:uppercase}}
+.nasze .wpis{{border-top-color:#DCE8E2}}
+.nasze .wpis:first-of-type{{border-top:0;padding-top:10px}}
+.nasze .wpis .data{{left:-196px}}
+.nasze .wpis .kr{{left:-69px}}
+@media(max-width:900px){{.nasze{{padding:14px 16px 8px}}
+ .nasze .wpis .data{{left:auto}} .nasze .wpis .kr{{left:auto}}}}
+
 .wpis.pusty .kr{{border-style:dashed;border-color:#C6CFCA}}
 .wpis h3{{font-size:19px;font-weight:400;letter-spacing:-.015em}}
 .wpis p{{font-size:14.5px;color:{MUT};margin-top:7px;max-width:46em}}

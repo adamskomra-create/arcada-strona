@@ -25,3 +25,29 @@ def mapka(lon,lat,etykieta,szer=240,kol_lad='#E4EAE7',kol_lin='#CBD5CF',kol_pkt=
             f'<circle cx="{px:.1f}" cy="{py:.1f}" r="9" fill="{kol_pkt}" opacity=".18"/>'
             f'<circle cx="{px:.1f}" cy="{py:.1f}" r="4.2" fill="{kol_pkt}"/>'
             f'</svg>')
+
+def mapka_zbiorcza(punkty, szer=560, kol_lad='#E4EAE7', kol_lin='#CBD5CF', kol_pkt='#1F5C4A'):
+    """punkty: [(lon, lat, etykieta, href)] - wszystkie obiekty na jednej mapie Polski."""
+    lons=[p[0] for p in PL]; lats=[p[1] for p in PL]
+    lo0,lo1=min(lons),max(lons); la0,la1=min(lats),max(lats)
+    k=math.cos(math.radians((la0+la1)/2))
+    W=(lo1-lo0)*k; H=(la1-la0); sk=szer/W; wys=H*sk
+    def xy(lo,la): return ((lo-lo0)*k*sk, (la1-la)*sk)
+    d='M'+' L'.join(f'{x:.1f},{y:.1f}' for x,y in (xy(*p) for p in PL))+' Z'
+    s=(f'<svg viewBox="0 0 {szer:.0f} {wys:.0f}" width="{szer:.0f}" height="{wys:.0f}" role="img" '
+       f'aria-label="Mapa Polski z położeniem wszystkich obiektów" '
+       f'style="display:block;max-width:100%;height:auto;overflow:visible">'
+       f'<path d="{d}" fill="{kol_lad}" stroke="{kol_lin}" stroke-width="1" stroke-linejoin="round"/>')
+    # rozsuwanie etykiet, zeby nie siadaly na sobie
+    uzyte=[]
+    for i,(lo,la,et,hr) in enumerate(punkty):
+        px,py=xy(lo,la)
+        ty=py-14
+        while any(abs(ty-u)<15 for u in uzyte): ty-=15
+        uzyte.append(ty)
+        s+=(f'<a href="{hr}" aria-label="{et}">'
+            f'<circle cx="{px:.1f}" cy="{py:.1f}" r="11" fill="{kol_pkt}" opacity=".15"/>'
+            f'<circle class="pkt" cx="{px:.1f}" cy="{py:.1f}" r="5.4" fill="{kol_pkt}"/>'
+            f'<text class="numer" x="{px:.1f}" y="{ty:.1f}" text-anchor="middle" '
+            f'font-size="12" font-weight="600" fill="{kol_pkt}">{i+1:02d}</text></a>')
+    return s+'</svg>'

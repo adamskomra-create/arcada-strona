@@ -210,8 +210,8 @@ def p_zespol():
         if not k:
             return (f'<div style="aspect-ratio:4/5;background:{SZA};display:flex;align-items:flex-end;'
                     f'padding:16px"><span class="m">[ZDJĘCIE PORTRETOWE]</span></div>')
-        return (f'<div class="portret"><img class="szkic" src="img/{k}-szkic.webp" alt="" aria-hidden="true" loading="lazy">'
-                f'<img class="foto" src="img/{k}-foto.webp" alt="{n}" loading="lazy"></div>')
+        return (f'<div class="portret"><img class="foto" src="img/{k}-foto.webp" alt="{n}" loading="lazy">'
+                f'<img class="szkic" src="img/{k}-szkic.webp" alt="" aria-hidden="true" loading="lazy"></div>')
     lu=''.join(f'''<div class="kar" style="padding:0">
 {_kadr(n)}
 <div style="padding:24px"><h3 style="font-size:20px">{n}</h3><p class="m" style="margin-top:6px">{rola}</p>
@@ -268,6 +268,16 @@ def zbuduj_pliki(out=None):
     zb,tr=f()
     open(f'{out}/{fn}','w',encoding='utf-8').write(strona(fn,t,d,zb,tr))
     n+=1
+  # osobna strona dla kazdego obiektu z bazy
+  if OBIEKTY_Z_BAZY:
+    ile=len(OBIEKTY_Z_BAZY)
+    for i,o in enumerate(OBIEKTY_Z_BAZY):
+      zb,tr=p_obiekt(o,i,ile)
+      tyt=f"{o['tytul']} - Arcada Concept"
+      op=(o.get('lead') or o.get('podtytul') or '')[:155]
+      open(f"{out}/{_plik_obiektu(o)}",'w',encoding='utf-8').write(
+          strona('realizacje.html',tyt,op,zb,tr))
+      n+=1
   here=os.path.dirname(os.path.abspath(__file__))
   for k in ('img','fonts'):
     zrodlo=os.path.join(here,k)
@@ -317,8 +327,21 @@ def _porownanie(o):
             f'<input type="range" min="0" max="100" value="50" aria-label="Porównanie przed i po, przesuń suwak">'
             f'</div><p class="cicha" style="margin-top:12px">Przesuń suwak, żeby porównać</p></div></div>')
 
+def _zakres(ws):
+    a,b=ws[0]['data'],ws[-1]['data']
+    return a if a==b else f'{a} - {b}'
+
 def _os(o):
     s=''
+    bufor=[]                      # ciagly blok wpisow wlasnych -> jedna ramka
+    def domknij():
+        nonlocal s,bufor
+        if not bufor: return
+        tr=''.join(bufor)
+        s+=(f'<div class="nasze"><span class="nasze-tag">Nasz remont · {_zakres(_bufdane)}</span>'
+            f'{tr}</div>')
+        bufor=[]
+    _bufdane=[]
     for w in o['wpisy']:
         kl={'my':'my','pusty':'pusty'}.get(w['rodzaj'],'')
         opis=w['opis']
@@ -329,26 +352,77 @@ def _os(o):
         elif w['blok']=='tabela':  dod=_tabela(o)
         elif w['blok']=='porownanie': dod=_porownanie(o)+_galeria(o)
         elif w['blok']=='galeria': dod=_galeria(o,w['id'])
-        s+=wpis(w['data'],w['tytul'],opis,kl,dod)
+        kawalek=wpis(w['data'],w['tytul'],opis,kl,dod)
+        if kl=='my':
+            bufor.append(kawalek); _bufdane.append(w)
+        else:
+            domknij(); _bufdane=[]; s+=kawalek
+    domknij()
     return s
 
 ETYKIETY={'odebrana':'Odebrana','w toku':'W toku','w przygotowaniu':'W przygotowaniu'}
 
+def _oklad(o):
+    """Zdjecie na karte: najpierw 'po', potem cokolwiek."""
+    z=o.get('zdjecia') or []
+    for rola in ('po','detal','przed','rysunek'):
+        for x in z:
+            if x.get('rola')==rola: return x['plik']
+    return z[0]['plik'] if z else None
+
+def _plik_obiektu(o): return f"obiekt-{o['slug']}.html"
+
+def _miejsce(o):
+    a=(o.get('adres') or '').replace('<br>',', ')
+    return a
+
 def p_realizacje_z_bazy(obiekty):
-    sek=''
+    from mapa import mapka_zbiorcza
+    pkt=[(float(o['lon']),float(o['lat']),o['tytul'],_plik_obiektu(o))
+         for o in obiekty if o.get('lon') and o.get('lat')]
+    mapa=(f'<section><div class="w"><div class="mapa-wszystko">'
+          f'<div>{mapka_zbiorcza(pkt,560)}</div>'
+          f'<div><span class="m">Gdzie pracujemy</span>'
+          f'<p class="lead" style="margin-top:10px">Każdy punkt to jeden obiekt. '
+          f'Kliknij, żeby przejść do jego historii.</p>'
+          f'<ol class="spis">' +
+          ''.join(f'<li><a href="{_plik_obiektu(o)}"><span class="nr">{i+1:02d}</span>'
+                  f'<span><strong>{o["tytul"]}</strong>'
+                  f'<span class="cicha">{_miejsce(o)}</span></span></a></li>'
+                  for i,o in enumerate(obiekty))
+          + f'</ol></div></div></div></section>') if pkt else ''
+
+    kar=''
     for i,o in enumerate(obiekty):
-        szara=' class="szara"' if i%2 else ''
-        plak=('<span class="plakietka-demo">wizualizacja poglądowa · obiekt fikcyjny</span>'
-              if o.get('demo') else '')
-        lead=f'<p class="lead">{o["lead"]}</p>' if o.get('lead') else ''
-        sek+=(f'<section{szara}><div class="w"><div class="nag">'
-              f'<span class="m">{i+1:02d} · {ETYKIETY.get(o["status"],o["status"])}</span>'
-              f'<h2>{o["tytul"]}</h2>{lead}{plak}</div>'
-              f'<div class="os">{_os(o)}</div></div></section>')
-    if not sek:
-        sek=('<section><div class="w"><div class="nag"><h2>Portfolio w budowie</h2>'
-             '<p class="lead">Obiekty pojawią się tu, gdy tylko zostaną wprowadzone.</p></div></div></section>')
+        f=_oklad(o)
+        obraz=(f'<div class="kar-foto"><img src="img/{f}" alt="{o["tytul"]}" loading="lazy"></div>'
+               if f else f'<div class="kar-foto pusta"><span class="m">[zdjęcie]</span></div>')
+        plak=('<span class="plakietka-demo">obiekt fikcyjny</span>' if o.get('demo') else '')
+        lead=o.get('lead') or ''
+        if len(lead)>140: lead=lead[:137].rsplit(' ',1)[0]+'…'
+        kar+=(f'<a class="kar-ob" href="{_plik_obiektu(o)}">{obraz}'
+              f'<div class="kar-tr"><span class="m">{i+1:02d} · {ETYKIETY.get(o["status"],o["status"])}</span>'
+              f'<h3>{o["tytul"]}</h3><p class="cicha">{lead}</p>{plak}'
+              f'<span class="inl">Zobacz obiekt</span></div></a>')
+    siatka=(f'<section class="szara"><div class="w"><div class="nag" style="margin-bottom:26px">'
+            f'<h2>Obiekty</h2></div><div class="siatka-ob">{kar}</div></div></section>'
+            if kar else
+            '<section><div class="w"><div class="nag"><h2>Portfolio w budowie</h2>'
+            '<p class="lead">Obiekty pojawią się tu, gdy tylko zostaną wprowadzone.</p></div></div></section>')
+
     return (blok('Portfolio','Każdy obiekt opisujemy jego własną osią czasu',
                  'Budynek stoi dłużej niż my. Remont to jeden datowany punkt w jego życiu - '
                  'pokazujemy, co było przed nim, co zrobiliśmy i co zostaje po nas.',
-                 cta=False,maly=True), sek)
+                 cta=False,maly=True), mapa+siatka)
+
+def p_obiekt(o,i,ile):
+    plak=('<span class="plakietka-demo">wizualizacja poglądowa · obiekt fikcyjny</span>'
+          if o.get('demo') else '')
+    lead=f'<p class="lead">{o["lead"]}</p>' if o.get('lead') else ''
+    sek=(f'<section><div class="w"><p style="margin-bottom:22px">'
+         f'<a class="inl" href="realizacje.html">← Wszystkie realizacje</a></p>'
+         f'<div class="nag"><span class="m">{i+1:02d} z {ile:02d} · '
+         f'{ETYKIETY.get(o["status"],o["status"])}</span>'
+         f'<h2>{o["tytul"]}</h2>{lead}{plak}</div>'
+         f'<div class="os">{_os(o)}</div></div></section>')
+    return (blok('Realizacja',o['tytul'],o.get('podtytul') or '',cta=False,maly=True), sek)
