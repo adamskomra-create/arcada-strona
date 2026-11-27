@@ -321,6 +321,21 @@ def zbuduj_pliki(out=None):
     n+=1
   except Exception as e:
     print('podglad pominiety:',e)
+  # cztery uklady strony obiektu do wyboru
+  if OBIEKTY_Z_BAZY:
+    try:
+      from uklady import WARIANTY, pasek, css_wariantow
+      wz=[x for x in OBIEKTY_Z_BAZY if x['slug']=='dwor-lipowiec'] or OBIEKTY_Z_BAZY
+      ob=wz[0]; poz=OBIEKTY_Z_BAZY.index(ob); ile=len(OBIEKTY_Z_BAZY)
+      for k,nazwa,opisw in WARIANTY:
+        zb,tr=p_obiekt_wariant(ob,poz,ile,k)
+        html=strona('realizacje.html',f'Układ {k.upper()}: {nazwa} - Arcada Concept',
+                    opisw,zb,tr+pasek(k),plik=f'uklad-{k}.html')
+        html=html.replace('<style>','<style>'+css_wariantow(),1)
+        html=html.replace('<body>',f'<body class="w-{k}">',1)
+        open(f'{out}/uklad-{k}.html','w',encoding='utf-8').write(html); n+=1
+    except Exception as e:
+      print('uklady pominiete:',e)
   # mapa witryny
   import datetime as _dt
   dzis=_dt.date.today().isoformat()
@@ -503,7 +518,7 @@ def _dokumenty(o):
     if not z: return ''
     k=''.join(f'<figure><img src="img/{x["plik"]}" alt="{x["alt"]}" loading="lazy">'
               f'<figcaption>{x["podpis"]}</figcaption></figure>' for x in z[:4])
-    return (f'<section class="ob-dok"><h2>Dokumentacja</h2>'
+    return (f'<section class="ob-dok" id="dokumentacja"><h2>Dokumentacja</h2>'
             f'<p class="cicha">Co zostaje po odbiorze i czym można się posłużyć przy rozliczeniu.</p>'
             f'<div class="dok-siatka">{k}</div></section>')
 
@@ -562,6 +577,65 @@ def p_obiekt(o,i,ile):
          f'</div></div></section>')
     return (blok('Realizacja',o['tytul'],o.get('podtytul') or '',cta=False,maly=True,
                  obraz=f,podpis=''), sek)
+
+def p_obiekt_wariant(o,i,ile,w):
+    """Ten sam obiekt w czterech układach - do wyboru."""
+    rys,podp=_rysunek(o)
+    f=_oklad(o)
+    rysunek=(f'<figure class="ob-foto"><img src="img/{rys}" alt="{podp or o["tytul"]}">'
+             f'<figcaption>{podp}</figcaption></figure>' if rys else '')
+    pola=[('Status',ETYKIETY.get(o['status'],o['status'])),
+          ('Okres prac',_nasz_okres(o)),('Zakres',o.get('material') or ''),
+          ('Gdzie',_miejsce(o)),('Inwestor',o.get('inwestor') or ''),
+          ('Tryb',o.get('tryb') or ''),('Nadzór',o.get('nadzor') or ''),
+          ('Rejestr zabytków',o.get('rejestr') or ''),('Pozwolenie',o.get('pozwolenie') or ''),
+          ('Finansowanie',o.get('finansowanie') or '')]
+    fakty=''.join(f'<div><dt>{k}</dt><dd>{v}</dd></div>' for k,v in pola if v)
+    plak=('<p class="plakietka-demo">wizualizacja poglądowa · obiekt fikcyjny</p>'
+          if o.get('demo') else '')
+    lead=f'<p class="lead">{o["lead"]}</p>' if o.get('lead') else ''
+    n=len(o.get('wpisy') or [])
+    hist=(f'<section class="ob-hist" id="historia"><h2>Historia obiektu</h2>'
+          f'<p class="cicha">Budynek stoi dłużej niż my. Nasz remont to jeden z datowanych '
+          f'wpisów w jego życiorysie - {_wpisow(n)} od {o["wpisy"][0]["data"]}.</p>'
+          f'<div class="os">{_os(o)}</div></section>') if n else ''
+    dok=_dokumenty(o)
+    okruchy=(f'<nav class="ob-okruchy" aria-label="Ścieżka">'
+             f'<a class="inl" href="index.html">Start</a><span>/</span>'
+             f'<a class="inl" href="realizacje.html">Realizacje</a><span>/</span>'
+             f'<span class="m">{o["tytul"]}</span></nav>')
+    dane=(f'<aside class="ob-dane" aria-label="Dane realizacji">'
+          f'<h2 class="dane-tyt">Dane realizacji</h2><dl>{fakty}</dl>'
+          f'{_nawiguj(o)}<p class="dane-nr">{i+1:02d} z {ile:02d}</p></aside>')
+
+    if w=='b':
+        sek=(f'<section class="ob-sek"><div class="w">{okruchy}'
+             f'<div class="ob-ukl">{dane}'
+             f'<div class="ob-tresc">{lead}{plak}{rysunek}{hist}{dok}</div>'
+             f'</div></div></section>')
+    elif w=='c':
+        okl=(f'<figure class="okladka"><img src="img/{f}" alt="{o["tytul"]}"></figure>'
+             if f else '')
+        spis=('<nav class="ob-spis" aria-label="Na tej stronie">'
+              '<a href="#historia">Historia obiektu</a>'
+              + ('<a href="#dokumentacja">Dokumentacja</a>' if dok else '')
+              + '<a href="realizacje.html">Wszystkie realizacje</a></nav>')
+        sek=(f'<section class="ob-sek"><div class="w">{okruchy}{okl}'
+             f'<div class="ob-ukl">{spis}'
+             f'<div class="ob-tresc">{dane}{lead}{plak}{rysunek}{hist}{dok}</div>'
+             f'</div></div></section>')
+    elif w=='d':
+        metr=(f'<div class="metryczka"><div class="mt-gl">Karta realizacji · '
+              f'{i+1:02d} z {ile:02d}</div><dl>{fakty}</dl></div>')
+        sek=(f'<section class="ob-sek"><div class="w">{okruchy}{metr}'
+             f'<div class="ob-ukl"><div class="ob-tresc">{lead}{plak}{rysunek}{hist}{dok}'
+             f'</div></div></div></section>')
+    else:
+        sek=(f'<section class="ob-sek"><div class="w">{okruchy}'
+             f'<div class="ob-ukl"><div class="ob-tresc">{lead}{plak}{rysunek}{hist}{dok}</div>'
+             f'{dane}</div></div></section>')
+    return (blok('Realizacja',o['tytul'],o.get('podtytul') or '',cta=False,maly=True,
+                 obraz=(None if w=='c' else f),podpis=''), sek)
 
 def _dane_obiektu(o,plik):
     """JSON-LD: okruszki i sam obiekt - pod wyniki rozszerzone w Google."""
