@@ -78,6 +78,19 @@ f'''<section><div class="w">
 <div class="boks"><div style="aspect-ratio:4/3"><img src="img/ilustracja-skaner-laserowy-na-statywie-1024.webp" alt="Skaner laserowy na statywie" loading="lazy" style="object-fit:contain"></div><p class="m" style="margin-top:12px">Skaner · wnętrza, krypty, sklepienia</p></div></div>
 </div></section>
 
+<section><div class="w">
+<div class="nag"><span class="m">Poradnik</span><h2>Zanim ruszy remont</h2></div>
+<div class="g3" style="margin-top:30px">
+<div class="boks"><h3 style="font-size:19px;line-height:1.3"><a class="inl" href="poradnik-ile-kosztuje-remont-zabytku.html">Ile kosztuje remont zabytku</a></h3>
+<p class="cicha" style="margin-top:9px">Dlaczego nie ma ceny za metr i które pozycje giną w tanich ofertach.</p></div>
+<div class="boks"><h3 style="font-size:19px;line-height:1.3"><a class="inl" href="poradnik-co-wolno-zmienic-w-zabytku.html">Co wolno zmienić w zabytku</a></h3>
+<p class="cicha" style="margin-top:9px">Rejestr, gminna ewidencja i strefa ochrony - trzy różne procedury.</p></div>
+<div class="boks"><h3 style="font-size:19px;line-height:1.3"><a class="inl" href="poradnik-kupno-domu-w-rejestrze-zabytkow.html">Kupujecie obiekt z rejestru?</a></h3>
+<p class="cicha" style="margin-top:9px">Co sprawdzić przed podpisaniem i które obowiązki przechodzą na nowego właściciela.</p></div>
+</div>
+<p style="margin-top:28px"><a class="inl" href="poradnik.html">Wszystkie teksty w Poradniku</a></p>
+</div></section>
+
 <section class="szara"><div class="w" style="text-align:center">
 <h2 style="max-width:18em;margin:0 auto">Macie obiekt pod ochroną konserwatora?</h2>
 <p class="lead" style="margin:14px auto 0">Napiszcie, co to za budynek i co chcecie zrobić. Odpowiadamy w ciągu dwóch dni roboczych.</p>
@@ -178,7 +191,10 @@ def p_uslugi():
     return (blok('Zakres','Od oględzin przed zakupem po rozliczenie dotacji',
                  'Możemy poprowadzić całość albo wejść tylko na wybranym etapie.',cta=False,maly=True),
 f'''<section><div class="w"><div class="nag" style="margin-bottom:24px"><h2>Co robimy</h2></div>{gr}
-<p style="margin-top:40px"><a class="btn" href="kontakt.html">Opiszcie obiekt</a></p></div></section>
+<p class="cicha" style="margin-top:34px;max-width:62ch">Jak wyglądają poszczególne etapy od strony formalnej, opisaliśmy w
+<a class="inl" href="poradnik-pozwolenie-konserwatorskie.html">tekście o pozwoleniu konserwatorskim</a> i w
+<a class="inl" href="poradnik-material-w-zabytku.html">tekście o doborze materiałów</a>.</p>
+<p style="margin-top:28px"><a class="btn" href="kontakt.html">Opiszcie obiekt</a></p></div></section>
 
 <section class="szara"><div class="w">
 <div class="nag"><span class="m">Jak pracujemy</span><h2>Pięć kroków, zawsze w tej samej kolejności</h2></div>
@@ -267,6 +283,9 @@ Nie doradzamy podatkowo - przy planowaniu wydatków pod ulgę warto rozmawiać z
 i robót budowlanych przy zabytku. Wyposażenie i aranżacja wnętrz zwykle nie przechodzą.</li>
 <li>Kosztów poniesionych przed podpisaniem umowy dotacyjnej, jeśli regulamin tego nie dopuszcza.</li>
 </ul>
+<p>Pozwolenie konserwatorskie jest więc warunkiem nie tylko prac, ale i pieniędzy. Procedurę
+opisaliśmy krok po kroku w <a class="inl" href="poradnik-pozwolenie-konserwatorskie.html">osobnym tekście</a>,
+a to, co decyduje o kosztach, w <a class="inl" href="poradnik-ile-kosztuje-remont-zabytku.html">tekście o cenie remontu</a>.</p>
 
 <h2 id="rytm">Rytm roku</h2>
 <table><thead><tr><th scope="col">Okres</th><th scope="col">Co się dzieje</th></tr></thead><tbody>
@@ -684,10 +703,17 @@ def zbuduj_pliki(out=None):
         + '</urlset>\n')
   open(f'{out}/sitemap.xml','w',encoding='utf-8').write(mapa); n+=1
   here=os.path.dirname(os.path.abspath(__file__))
+  # kopiowanie plik po pliku: dawniej calosc szla tylko gdy katalogu nie bylo,
+  # wiec nowy obrazek nigdy nie trafial na serwer po pierwszej budowie
   for k in ('img','fonts'):
     zrodlo=os.path.join(here,k)
-    if os.path.isdir(zrodlo) and not os.path.exists(f'{out}/{k}'):
-        shutil.copytree(zrodlo,f'{out}/{k}')
+    if not os.path.isdir(zrodlo): continue
+    cel=os.path.join(out,k); os.makedirs(cel,exist_ok=True)
+    for nazwa in os.listdir(zrodlo):
+      z=os.path.join(zrodlo,nazwa); c=os.path.join(cel,nazwa)
+      if not os.path.isfile(z): continue
+      if (not os.path.exists(c)) or os.path.getmtime(z)>os.path.getmtime(c)+1:
+        shutil.copy2(z,c)
   return n
 
 if __name__=='__main__':

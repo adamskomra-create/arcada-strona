@@ -290,6 +290,7 @@ body.bez-podgladu .pg-start{{display:none}}
 .ob-okruchy{{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:26px;font-size:14px}}
 .ob-okruchy span{{color:{MUT}}}
 .ob-ukl{{display:grid;grid-template-columns:minmax(0,1fr) 316px;gap:52px;align-items:start}}
+.ob-ukl>*{{min-width:0}}
 .ob-tresc .lead{{font-size:19.5px;line-height:1.55;max-width:38em;margin:0}}
 .ob-tresc .plakietka-demo{{display:table;margin-top:16px}}
 .ob-foto{{margin:30px 0 0}}
@@ -378,7 +379,8 @@ main section.art-sekcja{{padding-top:44px}}
 .szara .wpis,.szara .os::before{{border-color:#E0E4E2}}
 .szara .wpis .kr{{background:{SZA}}}
 @media(max-width:980px){{
- .os{{padding-left:34px}}.os::before{{left:7px}}
+ .os{{padding-left:34px;padding-right:0}}.os::before{{left:7px}}
+ .wpis .g3,.wpis .g2{{margin-right:0}}
  .wpis .data,.wpis:first-child .data{{position:static;width:auto;text-align:left;display:block;margin-bottom:5px}}
  .wpis .kr,.wpis:first-child .kr{{left:-32px;top:30px}}
 }}
@@ -543,7 +545,12 @@ def strona(akt,tytul,opis,zb,tresc,plik=None,dane=''):
            f'<meta property="og:title" content="{tytul}">'
            f'<meta property="og:description" content="{opis}">'
            f'<meta property="og:url" content="{kanon}">'
+           f'<meta property="og:image" content="{DOMENA}img/og-arcada.png">'
+           f'<meta property="og:image:width" content="1200">'
+           f'<meta property="og:image:height" content="630">'
+           f'<meta property="og:image:alt" content="Arcada Concept - remonty obiektów zabytkowych">'
            f'<meta name="twitter:card" content="summary_large_image">'
+           f'<meta name="twitter:image" content="{DOMENA}img/og-arcada.png">'
            f'<meta name="twitter:title" content="{tytul}">'
            f'<meta name="twitter:description" content="{opis}">'
            f'<meta name="theme-color" content="{ZIE}">'
