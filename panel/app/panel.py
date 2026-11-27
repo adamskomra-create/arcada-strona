@@ -15,6 +15,44 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('ARCADA_SECRET') or secrets.token_hex(32)
 app.config['MAX_CONTENT_LENGTH'] = 40 * 1024 * 1024
 
+# --- panel stoi pod /panel, a Caddy nie obcina prefiksu ---------------------
+# handle /panel* w Caddy przekazuje pelna sciezke, wiec Flask dostawal /panel
+# i zwracal 404. Middleware obcina prefiks i ustawia SCRIPT_NAME, a after_request
+# dokleja go z powrotem do adresow w HTML i w naglowku Location - w kodzie panelu
+# sciezki sa wpisane na sztywno od korzenia, wiec inaczej wyprowadzalyby poza panel.
+# Zapytania bez prefiksu (healthcheck kontenera na /zdrowie) dzialaja bez zmian.
+PREFIKS = os.environ.get('ARCADA_PREFIKS', '/panel').rstrip('/')
+
+class Podkatalog:
+    def __init__(self, wsgi, prefiks):
+        self.wsgi = wsgi
+        self.p = prefiks
+    def __call__(self, env, start_response):
+        s = env.get('PATH_INFO', '')
+        if self.p and (s == self.p or s.startswith(self.p + '/')):
+            env['SCRIPT_NAME'] = env.get('SCRIPT_NAME', '') + self.p
+            env['PATH_INFO'] = s[len(self.p):] or '/'
+        return self.wsgi(env, start_response)
+
+if PREFIKS:
+    app.wsgi_app = Podkatalog(app.wsgi_app, PREFIKS)
+
+_ADRES = re.compile(r'(href|action|src)="/(?!/)')
+
+@app.after_request
+def _dopisz_prefiks(odp):
+    korzen = request.environ.get('SCRIPT_NAME', '')
+    if not korzen:
+        return odp
+    lok = odp.headers.get('Location')
+    if lok and lok.startswith('/') and not lok.startswith('//') and not lok.startswith(korzen + '/') and lok != korzen:
+        odp.headers['Location'] = korzen + lok
+    if odp.direct_passthrough or not (odp.mimetype or '').startswith('text/html'):
+        return odp
+    odp.set_data(_ADRES.sub(lambda m: f'{m.group(1)}="{korzen}/', odp.get_data(as_text=True)))
+    return odp
+# ---------------------------------------------------------------------------
+
 STATUSY = ['odebrana', 'w toku', 'w przygotowaniu']
 RODZAJE = [('historia','Historia obiektu'), ('my','Nasze wejście'),
            ('pusty','Puste - do uzupełnienia'), ('dalej','Co dalej')]

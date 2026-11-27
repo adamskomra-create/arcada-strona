@@ -48,17 +48,21 @@ if [ "$PUSTA" = "0" ]; then
     docker exec -e ARCADA_ZRODLA=/ziarno/demo -e ARCADA_ZRODLA_REAL=/ziarno/prawdziwe \
       arcada-panel python /app/app/$S.py >/dev/null 2>&1 || die "Zasiew przerwany na $S"
   done
-  docker exec arcada-panel python -c "
-import sys; sys.path.insert(0,'/app/app')
-from baza import zaloz
-from budowa import zbuduj
-zbuduj(zaloz())
-" >/dev/null 2>&1 || die "Zasiew wszedl, ale strona sie nie przebudowala"
   docker exec arcada-panel rm -rf /ziarno >/dev/null 2>&1 || true
   ok "Baza zasiana: 2 obiekty prawdziwe + 5 demo (klient kasuje je w panelu jednym przyciskiem)"
 else
   ok "Baza ma juz $PUSTA obiektow - zasiewu nie uruchamiam"
 fi
+
+# --- przebudowa stron z bazy: przy kazdym uruchomieniu, zeby nowy kod generatora
+# --- od razu trafil na strone. Zrodlem tresci jest baza, wiec nic sie nie gubi.
+ILE=$(docker exec arcada-panel python -c "
+import sys; sys.path.insert(0,'/app/app')
+from baza import zaloz
+from budowa import zbuduj
+print(zbuduj(zaloz()))
+" 2>/dev/null | tail -1) || die "Strona sie nie przebudowala: docker logs arcada-panel"
+ok "Strony przebudowane: $ILE plikow"
 
 SRC=$(docker inspect "$CADDY" --format '{{range .Mounts}}{{if eq .Destination "/etc/caddy/Caddyfile"}}{{.Source}}{{end}}{{end}}')
 [ -n "$SRC" ] && [ -f "$SRC" ] || die "Nie znalazłem Caddyfile"
