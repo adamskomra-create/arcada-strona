@@ -204,8 +204,16 @@ f'''<section><div class="w">
 
 # ---------------- ZESPOL ----------------
 def p_zespol():
+    FOTO={'Hubert Rybkowski':'hubert'}
+    def _kadr(n):
+        k=FOTO.get(n)
+        if not k:
+            return (f'<div style="aspect-ratio:4/5;background:{SZA};display:flex;align-items:flex-end;'
+                    f'padding:16px"><span class="m">[ZDJĘCIE PORTRETOWE]</span></div>')
+        return (f'<div class="portret"><img class="szkic" src="img/{k}-szkic.webp" alt="" aria-hidden="true" loading="lazy">'
+                f'<img class="foto" src="img/{k}-foto.webp" alt="{n}" loading="lazy"></div>')
     lu=''.join(f'''<div class="kar" style="padding:0">
-<div style="aspect-ratio:4/5;background:{SZA};display:flex;align-items:flex-end;padding:16px"><span class="m">[ZDJĘCIE PORTRETOWE]</span></div>
+{_kadr(n)}
 <div style="padding:24px"><h3 style="font-size:20px">{n}</h3><p class="m" style="margin-top:6px">{rola}</p>
 <dl style="margin-top:18px;font-size:14.5px;display:grid;grid-template-columns:110px 1fr;gap:9px 14px">
 <dt style="color:{MUT}">Wykształcenie</dt><dd>{w}</dd>

@@ -85,6 +85,24 @@ a.inl{display:inline-flex;align-items:center;min-height:44px;color:#1F5C4A;text-
 .rece{display:block;margin-top:10px;font-family:'PM';font-size:11px;letter-spacing:.13em;
  text-transform:uppercase;color:#60666A}
 .wpis.my .rece{color:#1F5C4A}
+/* --- portret: łuk wymiata zdjęcie od dołu, jak kreska w sygnecie --- */
+@property --luk{syntax:'<percentage>';inherits:false;initial-value:0%}
+.portret{position:relative;aspect-ratio:4/5;overflow:hidden;background:#F6F8F7}
+.portret img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 18%}
+.portret .foto{--luk:0%;
+ -webkit-mask-image:radial-gradient(circle at 50% 112%,
+   transparent 0 var(--luk), #000 calc(var(--luk) + 4%) 100%);
+ mask-image:radial-gradient(circle at 50% 112%,
+   transparent 0 var(--luk), #000 calc(var(--luk) + 4%) 100%);
+ transition:--luk .72s cubic-bezier(.33,1,.68,1)}
+.portret:hover .foto,.portret:focus-within .foto{--luk:132%}
+.portret::after{content:'';position:absolute;inset:0;pointer-events:none;
+ background:radial-gradient(circle at 50% 112%,transparent 0 calc(var(--f,0%) - .5%),
+   #1F5C4A2E calc(var(--f,0%) - .5%) calc(var(--f,0%) + .6%), transparent calc(var(--f,0%) + .6%));
+ opacity:0;transition:opacity .25s}
+.portret:hover::after{opacity:1}
+@media (hover:none){.portret .foto{--luk:0%!important}}
+@media (prefers-reduced-motion:reduce){.portret .foto{transition:none}}
 .plakietka-demo{display:inline-block;margin-top:14px;font-family:'PM';font-size:11.5px;
  letter-spacing:.14em;text-transform:uppercase;color:#6B4310;background:#FDF6EC;
  border:1px solid #EBD5B3;border-radius:3px;padding:5px 10px}
