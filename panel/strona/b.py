@@ -109,19 +109,37 @@ a.inl{{display:inline-flex;align-items:center;min-height:44px;color:{ZIE};text-d
 .rece{{display:block;margin-top:10px;font-family:'PM';font-size:11px;letter-spacing:.13em;
  text-transform:uppercase;color:{MUT}}}
 .wpis.my .rece{{color:{ZIE}}}
-/* --- pasek roboczy: przelacznik urzadzen, nad naglowkiem --- */
-.pasek-p{{position:sticky;top:0;z-index:60;background:{ZIED};color:{KREM};
- display:flex;align-items:center;gap:14px;padding:8px 20px;font-size:13px;flex-wrap:wrap}}
-.pasek-p .et{{font-family:'PM';font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.7}}
-.pasek-p .gr{{display:flex;gap:4px;background:rgba(242,245,243,.09);padding:3px;border-radius:10px}}
-.pasek-p .gr a{{padding:6px 13px;border-radius:7px;text-decoration:none;
- color:rgba(242,245,243,.85);font-size:13px}}
-.pasek-p .gr a:hover{{background:rgba(242,245,243,.14);color:{KREM}}}
-.pasek-p .ukryj{{margin-left:auto;background:none;border:1px solid rgba(242,245,243,.3);
- color:{KREM};font:inherit;font-size:12.5px;padding:6px 12px;border-radius:8px;cursor:pointer}}
-.pasek-p .ukryj:hover{{background:rgba(242,245,243,.12)}}
-body.bez-paska .pasek-p{{display:none}}
-@media print{{.pasek-p{{display:none}}}}
+/* --- podglad urzadzen: przycisk i okno, narzedzie robocze --- */
+.pg-start{{position:fixed;right:18px;bottom:18px;z-index:70;display:flex;align-items:center;gap:9px;
+ background:{ZIED};color:{KREM};border:0;border-radius:999px;padding:11px 18px;cursor:pointer;
+ font:inherit;font-size:13.5px;box-shadow:0 8px 24px rgba(18,22,21,.22)}}
+.pg-start:hover{{background:{ZIE}}}
+.pg-start svg{{display:block}}
+.pg-okno{{position:fixed;inset:0;z-index:80;background:rgba(18,22,21,.62);
+ display:none;flex-direction:column;backdrop-filter:blur(2px)}}
+.pg-okno[open],.pg-okno.widok{{display:flex}}
+.pg-pas{{flex:0 0 auto;background:{ZIED};color:{KREM};display:flex;align-items:center;gap:14px;
+ padding:10px 18px;flex-wrap:wrap}}
+.pg-pas .et{{font-family:'PM';font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.7}}
+.pg-pas .gr{{display:flex;gap:4px;background:rgba(242,245,243,.09);padding:3px;border-radius:10px}}
+.pg-pas .gr button{{font:inherit;font-size:13px;padding:6px 13px;border:0;border-radius:7px;
+ cursor:pointer;background:transparent;color:rgba(242,245,243,.85)}}
+.pg-pas .gr button:hover{{color:{KREM}}}
+.pg-pas .gr button.akt{{background:{KREM};color:{ZIED};font-weight:500}}
+.pg-pas .pom{{font:inherit;font-size:12.5px;padding:7px 13px;border-radius:8px;cursor:pointer;
+ border:1px solid rgba(242,245,243,.3);background:transparent;color:{KREM}}}
+.pg-pas .pom[disabled]{{opacity:.35;cursor:default}}
+.pg-pas .miara{{font-size:12.5px;opacity:.75;font-variant-numeric:tabular-nums}}
+.pg-pas .zamk{{margin-left:auto;font:inherit;font-size:20px;line-height:1;padding:4px 11px 7px;
+ border-radius:8px;border:0;background:transparent;color:{KREM};cursor:pointer}}
+.pg-pas .zamk:hover{{background:rgba(242,245,243,.14)}}
+.pg-scena{{flex:1 1 auto;overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:24px}}
+.pg-ramka{{background:#fff;border-radius:20px;overflow:hidden;flex:0 0 auto;
+ box-shadow:0 20px 56px rgba(0,0,0,.4)}}
+.pg-ramka iframe{{display:block;border:0;width:100%;height:100%;background:#fff}}
+body.pg-stop{{overflow:hidden}}
+body.bez-podgladu .pg-start{{display:none}}
+@media print{{.pg-start,.pg-okno{{display:none!important}}}}
 /* --- portret: rysunek przenika zdjęcie tylko pod kursorem --- */
 @property --ps{{syntax:'<number>';inherits:true;initial-value:0}}
 .portret{{position:relative;aspect-ratio:4/5;overflow:hidden;background:{SZA};
@@ -328,19 +346,37 @@ footer a.inl{{color:{KREM};min-height:40px}}
 """
 JS=r"""
 (function(){
- var p=document.getElementById('paskp'); if(!p) return;
- try{ if(localStorage.getItem('arcada-pasek')==='0') document.body.classList.add('bez-paska'); }catch(e){}
- var u=document.getElementById('ukryjp');
- if(u) u.addEventListener('click',function(){
-   document.body.classList.add('bez-paska');
-   try{ localStorage.setItem('arcada-pasek','0'); }catch(e){}
+ if(window.self!==window.top){ document.body.classList.add('bez-podgladu'); return; }
+ var st=document.getElementById('pgStart'), ok=document.getElementById('pgOkno'),
+     ram=document.getElementById('pgRam'), ramka=document.getElementById('pgRamka'),
+     mia=document.getElementById('pgMiara'), obr=document.getElementById('pgObrot'),
+     urz=document.getElementById('pgUrz');
+ if(!st||!ok) return;
+ var w=390,h=844,poziomo=false;
+ function wymiar(){
+  var a=poziomo?h:w, b=poziomo?w:h;
+  ramka.style.width=a+'px'; ramka.style.height=b+'px';
+  mia.textContent=a+' \u00d7 '+b+' px';
+ }
+ function otworz(){
+  ok.classList.add('widok'); document.body.classList.add('pg-stop');
+  if(!ram.getAttribute('src')) ram.setAttribute('src',location.pathname.split('/').pop()||'index.html');
+  wymiar();
+ }
+ function zamknij(){ ok.classList.remove('widok'); document.body.classList.remove('pg-stop'); }
+ st.addEventListener('click',otworz);
+ document.getElementById('pgZamk').addEventListener('click',zamknij);
+ ok.addEventListener('click',function(e){
+  if(e.target===ok||e.target.classList.contains('pg-scena')) zamknij();
  });
- var tu=location.pathname.split('/').pop()||'index.html';
- [].forEach.call(p.querySelectorAll('.gr a'),function(a){
-   var url=new URL(a.getAttribute('href'),location.href);
-   url.searchParams.set('p',tu);
-   a.setAttribute('href',url.pathname+url.search);
+ document.addEventListener('keydown',function(e){ if(e.key==='Escape') zamknij(); });
+ urz.addEventListener('click',function(e){
+  var b=e.target.closest('button'); if(!b) return;
+  [].forEach.call(urz.querySelectorAll('button'),function(x){x.classList.remove('akt')});
+  b.classList.add('akt'); w=+b.dataset.w; h=+b.dataset.h; poziomo=false; wymiar();
  });
+ obr.addEventListener('click',function(){ poziomo=!poziomo; wymiar(); });
+ urz.querySelector('button').classList.add('akt');
 })();
 
 (function(){
@@ -422,14 +458,6 @@ def strona(akt,tytul,opis,zb,tresc):
      '<meta name="robots" content="noindex,nofollow">'
      f'<title>{tytul}</title><meta name="description" content="{opis}">'
      f'<style>{CSS}</style></head><body>'
-     '<div class="pasek-p" id="paskp"><span class="et">Podgląd</span>'
-     '<span class="gr">'
-     '<a href="podglad.html?s=telefon" data-u="telefon">Telefon</a>'
-     '<a href="podglad.html?s=tabletp" data-u="tabletp">Tablet</a>'
-     '<a href="podglad.html?s=laptop" data-u="laptop">Laptop</a>'
-     '<a href="podglad.html" data-u="pelna">Wszystkie</a>'
-     '</span>'
-     '<button class="ukryj" type="button" id="ukryjp">Ukryj</button></div>'
      '<a class="skip" href="#main">Przejdź do treści</a>'
      f'<header><div class="w hin"><a href="index.html" aria-label="Arcada Concept, strona główna">{logo(30)}</a>'
      f'<nav class="gl" aria-label="Główne">{nav}</nav>'
@@ -447,6 +475,21 @@ def strona(akt,tytul,opis,zb,tresc):
      '</div></div>'
      '<div class="fdol"><span class="m">Arcada Concept sp. z o.o. · remonty obiektów zabytkowych</span>'
      '<span class="m">NIP 665 305 91 60 · KRS 0001051640</span></div></div></footer>'
+     '<button class="pg-start" id="pgStart" type="button" aria-haspopup="dialog">'
+     '<svg width="14" height="18" viewBox="0 0 14 18" fill="none" aria-hidden="true">'
+     '<rect x="1" y="1" width="12" height="16" rx="2.5" stroke="currentColor" stroke-width="1.6"/>'
+     '<circle cx="7" cy="14" r="1" fill="currentColor"/></svg>Podgląd</button>'
+     '<div class="pg-okno" id="pgOkno" role="dialog" aria-modal="true" aria-label="Podgląd na urządzeniach">'
+     '<div class="pg-pas"><span class="et">Podgląd</span>'
+     '<span class="gr" id="pgUrz">'
+     '<button type="button" data-w="390" data-h="844">Telefon</button>'
+     '<button type="button" data-w="820" data-h="1180">Tablet</button>'
+     '<button type="button" data-w="1280" data-h="800">Laptop</button></span>'
+     '<button class="pom" type="button" id="pgObrot">Obróć</button>'
+     '<span class="miara" id="pgMiara"></span>'
+     '<button class="zamk" type="button" id="pgZamk" aria-label="Zamknij podgląd">&times;</button></div>'
+     '<div class="pg-scena"><div class="pg-ramka" id="pgRamka"><iframe id="pgRam" title="Podgląd strony"></iframe></div></div>'
+     '</div>'
      f'<script>{JS}</script></body></html>')
 
 def blok(nadt,h1,lead=None,cta=True,maly=False,obraz=None,podpis=None):
