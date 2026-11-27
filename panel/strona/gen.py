@@ -424,14 +424,46 @@ def p_realizacje_z_bazy(obiekty):
                  'pokazujemy, co było przed nim, co zrobiliśmy i co zostaje po nas.',
                  cta=False,maly=True), mapa+siatka)
 
+def _wpisow(n):
+    if n==1: return '1 wpis'
+    r=n%10; rr=n%100
+    return f'{n} wpisy' if (2<=r<=4 and not 12<=rr<=14) else f'{n} wpisów'
+
+def _rysunek(o):
+    """Do naglowka: najpierw rysunek techniczny, potem zdjecie 'po'."""
+    for rola in ('rysunek',):
+        for x in (o.get('zdjecia') or []):
+            if x.get('rola')==rola: return x['plik'],'Rysunek inwentaryzacyjny'
+    f=_oklad(o)
+    return (f,'') if f else (None,'')
+
 def p_obiekt(o,i,ile):
+    f=_oklad(o)
+    rys,podp=_rysunek(o)
+    hero=(f'<div class="ob-foto"><img src="img/{f}" alt="{o["tytul"]}"></div>' if f else '')
+    pola=[('Status',ETYKIETY.get(o['status'],o['status'])),
+          ('Zakres',o.get('material') or ''),
+          ('Gdzie',_miejsce(o)),
+          ('Inwestor',o.get('inwestor') or ''),
+          ('Nadzór',o.get('nadzor') or ''),
+          ('Rejestr zabytków',o.get('rejestr') or ''),
+          ('Finansowanie',o.get('finansowanie') or '')]
+    fakty=''.join(f'<div><dt>{k}</dt><dd>{v}</dd></div>' for k,v in pola if v)
     plak=('<span class="plakietka-demo">wizualizacja poglądowa · obiekt fikcyjny</span>'
           if o.get('demo') else '')
     lead=f'<p class="lead">{o["lead"]}</p>' if o.get('lead') else ''
+    n=len(o.get('wpisy') or [])
+    hist=(f'<details class="historia"><summary><span class="hist-tyt">Historia obiektu</span>'
+          f'<span class="hist-ile">{_wpisow(n)} · od {o["wpisy"][0]["data"]} do {o["wpisy"][-1]["data"]}</span>'
+          f'<span class="hist-strz" aria-hidden="true"></span></summary>'
+          f'<div class="os">{_os(o)}</div></details>') if n else ''
     sek=(f'<section><div class="w"><p style="margin-bottom:22px">'
          f'<a class="inl" href="realizacje.html">← Wszystkie realizacje</a></p>'
          f'<div class="nag"><span class="m">{i+1:02d} z {ile:02d} · '
          f'{ETYKIETY.get(o["status"],o["status"])}</span>'
          f'<h2>{o["tytul"]}</h2>{lead}{plak}</div>'
-         f'<div class="os">{_os(o)}</div></div></section>')
-    return (blok('Realizacja',o['tytul'],o.get('podtytul') or '',cta=False,maly=True), sek)
+         f'{hero}'
+         f'<dl class="ob-fakty">{fakty}</dl>'
+         f'{hist}</div></section>')
+    return (blok('Realizacja',o['tytul'],o.get('podtytul') or '',cta=False,maly=True,
+                 obraz=rys,podpis=podp), sek)
