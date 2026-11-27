@@ -191,7 +191,7 @@ body.bez-podgladu .pg-start{{display:none}}
 .arch:hover{{border-color:#BFD2C8;box-shadow:0 10px 28px rgba(18,22,21,.07)}}
 .arch.akt{{border-color:{ZIE};order:-1}}
 .arch-tr{{padding:22px 24px 24px}}
-.arch-tr h3{{font-size:20px}}
+.arch-tr h2.arch-h{{font-size:20px;letter-spacing:-.01em}}
 .arch-tr .m{{margin-top:6px}}
 .arch-dl{{margin-top:18px;font-size:14.5px;display:grid;grid-template-columns:112px 1fr;gap:9px 14px}}
 .arch-dl dt{{color:{MUT}}}
@@ -203,7 +203,7 @@ body.bez-podgladu .pg-start{{display:none}}
 .zesp.otw .arch:not(.akt) .portret,.zesp.otw .arch:not(.akt) .portret.pusty{{aspect-ratio:1;border-radius:12px;cursor:pointer}}
 .zesp.otw .arch:not(.akt) .arch-tr{{padding:0}}
 .zesp.otw .arch:not(.akt) .portret.pusty span{{display:none}}
-.zesp.otw .arch:not(.akt) .arch-tr h3{{font-size:16px}}
+.zesp.otw .arch:not(.akt) .arch-tr h2.arch-h{{font-size:16px}}
 .zesp.otw .arch:not(.akt) .arch-dl{{display:none}}
 .zesp.otw .arch:not(.akt) .arch-wiecej{{display:block;margin-top:4px}}
 .zesp.otw .arch.akt .arch-dl{{display:none}}

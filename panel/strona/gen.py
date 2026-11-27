@@ -176,7 +176,7 @@ def p_uslugi():
         gr+=f'<div style="margin-top:46px"><span class="m">{g}</span>{poz}<div style="border-top:1px solid {LIN}"></div></div>'
     return (blok('Zakres','Od oględzin przed zakupem po rozliczenie dotacji',
                  'Możemy poprowadzić całość albo wejść tylko na wybranym etapie.',cta=False,maly=True),
-f'''<section><div class="w">{gr}
+f'''<section><div class="w"><div class="nag" style="margin-bottom:24px"><h2>Co robimy</h2></div>{gr}
 <p style="margin-top:40px"><a class="btn" href="kontakt.html">Opiszcie obiekt</a></p></div></section>
 
 <section class="szara"><div class="w">
@@ -193,12 +193,12 @@ def p_dot():
 f'''<section><div class="w">
 <table><thead><tr><th scope="col">Źródło</th><th scope="col">Kto składa wniosek</th><th scope="col">Kiedy</th></tr></thead><tbody>{rows}</tbody></table>
 <div class="g2">
-<div class="boks"><h3>Co robimy my</h3><ul>
+<div class="boks"><h2>Co robimy my</h2><ul>
 <li>Sprawdzamy status ochrony i to, czy obiekt kwalifikuje się do programu</li>
 <li>Kompletujemy dokumentację techniczną do wniosku</li>
 <li>Pilnujemy terminów naborów</li>
 <li>Przygotowujemy dokumenty do rozliczenia przyznanych środków</li></ul></div>
-<div class="boks"><h3>Czego potrzebujemy od Was</h3><ul>
+<div class="boks"><h2>Czego potrzebujemy od Was</h2><ul>
 <li>Decyzję o wpisie do rejestru zabytków</li>
 <li>Dokument własności obiektu</li>
 <li>Zgodę na kontakt z urzędem w Waszym imieniu</li>
@@ -222,7 +222,7 @@ def p_zespol():
     for i,(n,rola,w,d,u,tel) in enumerate(ZESPOL):
         inf=ZESPOL_INFO.get(n,{})
         kar+=(f'<button class="arch" type="button" data-k="{i}" aria-expanded="false" aria-controls="zinfo">'
-              f'{_kadr(n)}<div class="arch-tr"><h3>{n}</h3><p class="m">{rola}</p>'
+              f'{_kadr(n)}<div class="arch-tr"><h2 class="arch-h">{n}</h2><p class="m">{rola}</p>'
               f'<dl class="arch-dl"><dt>Wykształcenie</dt><dd>{w}</dd>'
               f'<dt>Doświadczenie</dt><dd>{d}</dd><dt>Uprawnienia</dt><dd>{u}</dd></dl>'
               f'<span class="inl arch-wiecej">Zobacz więcej</span></div></button>')
@@ -258,7 +258,7 @@ f'''<section><div class="w"><div class="g2" style="margin-top:0;max-width:980px"
 <button class="btn" type="submit">Wyślij opis obiektu</button>
 <p class="cicha" style="font-size:13px">Dane z formularza służą tylko do odpowiedzi na wiadomość.</p>
 </form>
-<div id="kok" hidden tabindex="-1" class="boks"><h3>Wiadomość przygotowana</h3>
+<div id="kok" hidden tabindex="-1" class="boks"><h2>Wiadomość przygotowana</h2>
 <p class="cicha" style="margin-top:9px">Formularz zacznie wysyłać wiadomości po uruchomieniu skrzynki w domenie. Na razie napiszcie na arcada.concept@gmail.com albo zadzwońcie.</p></div>
 <div class="boks">
 <span class="m">Adres</span><p style="margin-top:6px">Arcada Concept sp. z o.o.<br>ul. Wrzosowa 3, 62-571 Żychlin</p>
@@ -270,12 +270,12 @@ f'''<section><div class="w"><div class="g2" style="margin-top:0;max-width:980px"
 def zbuduj_pliki(out=None):
   out=out or OUT
   os.makedirs(out,exist_ok=True)
-  PG=[('index.html','Arcada Concept - remonty zabytków w całej Polsce','Remontujemy tylko zabytki. Pomiar, dokumentacja, pozwolenia konserwatorskie, dofinansowania i roboty budowlane. Cała Polska.',p_start),
-      ('realizacje.html','Realizacje - Arcada Concept','Portfolio: kaplica cmentarna z kryptą w Kościelcu, zakres prac, inwestor, wartość kontraktu i poświadczenie odbioru.',p_realizacje),
-      ('uslugi.html','Usługi - Arcada Concept','Ekspertyza przed zakupem, inwentaryzacja, formalności z konserwatorem, projekt, roboty budowlane i nadzór autorski.',p_uslugi),
-      ('dofinansowania.html','Dofinansowania - Arcada Concept','Program ministra, dotacja wojewódzkiego konserwatora, środki gminy. Co robimy my, czego potrzebujemy od Was.',p_dot),
-      ('zespol.html','Architekci - Arcada Concept','Dwóch architektów, obaj współwłaściciele. Projekt prowadzi osoba, z którą rozmawiacie.',p_zespol),
-      ('kontakt.html','Kontakt - Arcada Concept','Napiszcie, co to za budynek i co chcecie zrobić. Odpowiadamy w ciągu dwóch dni roboczych.',p_kontakt)]
+  PG=[('index.html','Remonty zabytków w całej Polsce · Arcada Concept','Remontujemy tylko zabytki. Pomiar, dokumentacja, pozwolenia konserwatorskie, dofinansowania i roboty budowlane. Cała Polska.',p_start),
+      ('realizacje.html','Realizacje - remonty zabytków · Arcada Concept','Portfolio: kaplica cmentarna z kryptą w Kościelcu, zakres prac, inwestor, wartość kontraktu i poświadczenie odbioru.',p_realizacje),
+      ('uslugi.html','Usługi: ekspertyza, dokumentacja, roboty · Arcada','Ekspertyza przed zakupem, inwentaryzacja, formalności z konserwatorem, projekt, roboty budowlane i nadzór autorski.',p_uslugi),
+      ('dofinansowania.html','Dofinansowania na remont zabytku · Arcada Concept','Program ministra, dotacja wojewódzkiego konserwatora, środki gminy. Co robimy my, czego potrzebujemy od Was.',p_dot),
+      ('zespol.html','Architekci konserwatorscy · Arcada Concept','Dwóch architektów, obaj współwłaściciele. Projekt prowadzi osoba, z którą rozmawiacie - nie przekazujemy sprawy dalej. Remonty zabytków w całej Polsce.',p_zespol),
+      ('kontakt.html','Kontakt - wycena remontu zabytku · Arcada Concept','Napiszcie, co to za budynek i co chcecie zrobić. Odpowiadamy w ciągu dwóch dni roboczych.',p_kontakt)]
   import shutil
   n=0
   import json as _json
@@ -294,6 +294,24 @@ def zbuduj_pliki(out=None):
     dd=''
     if fn=='index.html':
       dd='<script type="application/ld+json">'+_json.dumps(FIRMA,ensure_ascii=False)+'</script>'
+    elif fn=='zespol.html' and FAQ:
+      faq={"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+            {"@type":"Question","name":q,
+             "acceptedAnswer":{"@type":"Answer","text":a}} for q,a in FAQ]}
+      dd='<script type="application/ld+json">'+_json.dumps(faq,ensure_ascii=False)+'</script>'
+    elif fn=='uslugi.html':
+      usl=[]
+      for grupa,items in USL:
+        for t,d in items:
+          usl.append({"@type":"Service","name":t,"description":d,
+                      "serviceType":grupa,
+                      "provider":{"@type":"Organization","name":"Arcada Concept sp. z o.o."},
+                      "areaServed":{"@type":"Country","name":"Polska"}})
+      lista={"@context":"https://schema.org","@type":"ItemList",
+             "name":"Usługi Arcada Concept","numberOfItems":len(usl),
+             "itemListElement":[{"@type":"ListItem","position":k+1,"item":u}
+                                for k,u in enumerate(usl)]}
+      dd='<script type="application/ld+json">'+_json.dumps(lista,ensure_ascii=False)+'</script>'
     elif fn=='realizacje.html' and OBIEKTY_Z_BAZY:
       lista={"@context":"https://schema.org","@type":"ItemList",
              "name":"Realizacje Arcada Concept","numberOfItems":len(OBIEKTY_Z_BAZY),
@@ -309,8 +327,11 @@ def zbuduj_pliki(out=None):
     for i,o in enumerate(OBIEKTY_Z_BAZY):
       zb,tr=p_obiekt(o,i,ile)
       pl=_plik_obiektu(o)
-      tyt=f"{o['tytul']} - remont zabytku - Arcada Concept"
-      op=(o.get('lead') or o.get('podtytul') or '')[:155]
+      tyt=o['tytul']
+      if len(tyt)>44: tyt=f"{tyt[:41].rsplit(' ',1)[0]}… · Arcada"
+      elif len(tyt)>26: tyt=f"{tyt} · Arcada Concept"
+      else: tyt=f"{tyt} - remont zabytku · Arcada Concept"
+      op=_opis_obiektu(o)
       open(f"{out}/{pl}",'w',encoding='utf-8').write(
           strona('realizacje.html',tyt,op,zb,tr,plik=pl,dane=_dane_obiektu(o,pl)))
       n+=1
@@ -636,6 +657,26 @@ def p_obiekt_wariant(o,i,ile,w):
              f'{dane}</div></div></section>')
     return (blok('Realizacja',o['tytul'],o.get('podtytul') or '',cta=False,maly=True,
                  obraz=(None if w=='c' else f),podpis=''), sek)
+
+def _opis_obiektu(o):
+    """Opis pod wyniki wyszukiwania: co, gdzie, w jakim zakresie - 110-158 znakow."""
+    czesci=[]
+    lead=(o.get('lead') or '').strip()
+    if lead: czesci.append(lead.rstrip('.'))
+    mat=o.get('material') or ''
+    if mat: czesci.append(f'Zakres: {mat}')
+    adres=(o.get('adres') or '').replace('<br>',', ')
+    woj=''
+    for cz in adres.split(','):
+        if 'woj.' in cz: woj=cz.strip()
+    if woj: czesci.append(woj)
+    t='. '.join(czesci)+'.'
+    t=t.replace('..','.')
+    if len(t)>158:
+        t=t[:155].rsplit(' ',1)[0]+'...'
+    elif len(t)<110:
+        t=(t+' Remont obiektu zabytkowego - Arcada Concept.')[:158]
+    return t
 
 def _dane_obiektu(o,plik):
     """JSON-LD: okruszki i sam obiekt - pod wyniki rozszerzone w Google."""
