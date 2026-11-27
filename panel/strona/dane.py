@@ -13,7 +13,8 @@ USL=[('Przed zakupem',[('Ekspertyza przed zakupem','Oględziny, ocena stanu tech
                       ('Nadzór autorski','Do odbioru końcowego i rozliczenia dotacji.')])]
 DOT=[('Program ministra „Ochrona zabytków”','Właściciel lub zarządca zabytku wpisanego do rejestru, także osoba prywatna i parafia','Prace planowane: nabór jesienią roku poprzedzającego. Refundacja prac z ostatnich trzech lat: nabór w pierwszym kwartale'),
      ('Dotacja wojewódzkiego konserwatora zabytków','Właściciel zabytku','Osobny nabór i budżet w każdym województwie'),
-     ('Dotacja gminy albo miasta','Właściciel zabytku','Nabór ogłaszany przez gminę, zwykle na rok następny')]
+     ('Dotacja gminy albo miasta','Właściciel zabytku','Nabór ogłaszany przez gminę, zwykle na rok następny'),
+     ('Rządowy Program Odbudowy Zabytków','Gmina, powiat albo województwo - także na obiekt innego właściciela','Dwie edycje w 2023 roku, nowego naboru nie ogłoszono')]
 FAQ=[('Czy mogę dostać dofinansowanie na prywatny dom wpisany do rejestru?','Tak. W programie ministra „Ochrona zabytków” wnioski mogą składać także osoby fizyczne, o ile obiekt jest wpisany do rejestru zabytków. Równolegle działają dotacje wojewódzkiego konserwatora i dotacje gminne. Sprawdzamy wszystkie trzy ścieżki i mówimy, która w Waszym przypadku ma sens.'),
      ('Co wolno zmienić w budynku pod ochroną konserwatora?','To zależy od zakresu wpisu do rejestru. Czasem chroniona jest cała substancja budynku, czasem tylko bryła i elewacje. Zakres ustalamy na początku, na podstawie decyzji o wpisie, i dopiero wtedy planujemy prace.'),
      ('Jak dobiera się cegłę do uzupełnień?','Pod wymiar, kolor, nasiąkliwość i sposób wypału oryginału. Czasem da się odzyskać cegłę rozbiórkową z tego samego okresu, czasem trzeba zamówić cegłę formowaną ręcznie. Dobór uzgadniamy z konserwatorem przed rozpoczęciem prac.'),

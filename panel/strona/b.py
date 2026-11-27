@@ -18,7 +18,8 @@ def face(fam,pkg,w):
 F=''.join([face('AR','archivo',w) for w in (400,500,700)]+[face('PM','ibm-plex-mono',w) for w in (400,500)])
 
 STRONY=[('Start','index.html'),('Realizacje','realizacje.html'),('Usługi','uslugi.html'),
-        ('Dofinansowania','dofinansowania.html'),('Architekci','zespol.html'),('Kontakt','kontakt.html')]
+        ('Dofinansowania','dofinansowania.html'),('Poradnik','poradnik.html'),
+        ('Architekci','zespol.html'),('Kontakt','kontakt.html')]
 
 CSS=F+f"""
 @view-transition{{navigation:auto}}
@@ -315,6 +316,45 @@ body.bez-podgladu .pg-start{{display:none}}
 .ob-dane dl{{display:flex;flex-direction:column;gap:14px;margin:0}}
 .ob-dane dt{{font-family:'PM';font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:{MUT}}}
 .ob-dane dd{{margin:4px 0 0;font-size:15.5px;line-height:1.45}}
+main section.art-sekcja{{padding-top:44px}}
+.art a.inl,.ob-dane p a.inl,.art-faq a.inl,.art-zrodla a.inl{{display:inline;min-height:0}}
+.art{{max-width:40em}}
+.art .lead{{font-size:19.5px;line-height:1.55;margin:0 0 6px}}
+.art h2{{font-size:25px;line-height:1.2;margin:40px 0 0;letter-spacing:-.012em}}
+.art h3{{font-size:18.5px;margin:28px 0 0}}
+.art p{{margin-top:14px;line-height:1.62}}
+.art ul,.art ol{{margin-top:14px;padding-left:23px;display:flex;flex-direction:column;gap:9px}}
+.art ul{{list-style:disc}}.art ol{{list-style:decimal}}
+.art li::marker{{color:{ZIE}}}
+.art-zrodla ul{{list-style:none}}
+.art li{{line-height:1.55}}
+.art table{{margin-top:22px}}
+.art .uwaga{{margin-top:22px;background:{SZA};border-left:3px solid {ZIE};padding:18px 20px}}
+.art .uwaga p{{margin-top:0}}
+.art-faq{{margin-top:48px;border-top:1px solid {LIN}}}
+.art-faq h2{{margin-top:26px}}
+.art-faq details{{border-bottom:1px solid {LIN};padding:16px 0}}
+.art-faq summary{{cursor:pointer;font-weight:500;font-size:16.5px;list-style:none;
+ display:flex;justify-content:space-between;gap:14px;min-height:28px;align-items:center}}
+.art-faq summary::-webkit-details-marker{{display:none}}
+.art-faq summary::after{{content:'+';color:{ZIE};font-size:21px;line-height:1}}
+.art-faq details[open] summary::after{{content:'\2013'}}
+.art-faq details p{{color:{MUT};max-width:44em}}
+.art-zrodla{{margin-top:44px;border-top:1px solid {LIN};padding-top:20px}}
+.art-zrodla ul{{padding-left:0;list-style:none;gap:7px;font-size:14.5px}}
+.spis{{display:flex;flex-direction:column;gap:9px;margin-top:10px}}
+.spis a{{font-size:14.5px;line-height:1.35;color:{INK};border-left:2px solid {LIN};padding-left:11px}}
+.spis a:hover{{border-color:{ZIE};color:{ZIE}}}
+.por-lista{{display:flex;flex-direction:column;gap:0;margin-top:34px;border-top:1px solid {LIN}}}
+.por-poz{{display:grid;grid-template-columns:46px minmax(0,1fr) 112px;gap:22px;align-items:start;
+ border-bottom:1px solid {LIN};padding:26px 0}}
+.por-poz .nr{{font-family:'PM';font-size:13px;color:{MUT};padding-top:3px}}
+.por-poz h2{{font-size:21px;line-height:1.25;margin:0}}
+.por-poz h2 a:hover{{color:{ZIE}}}
+.por-poz p{{color:{MUT};margin-top:7px;max-width:52em;line-height:1.55}}
+.por-poz .czas{{font-family:'PM';font-size:12px;color:{MUT};text-align:right;padding-top:5px}}
+@media(max-width:640px){{.por-poz{{grid-template-columns:1fr;gap:4px}}
+ .por-poz .czas{{text-align:left;padding-top:8px}}}}
 .dane-nr{{margin-top:20px;padding-top:16px;border-top:1px solid {LIN};
  font-family:'PM';font-size:12px;letter-spacing:.1em;color:{MUT}}}
 @media(max-width:1000px){{.ob-ukl{{grid-template-columns:1fr;gap:34px}}
@@ -535,7 +575,9 @@ def strona(akt,tytul,opis,zb,tresc,plik=None,dane=''):
      '</div></div>'
      '<div class="fdol"><span class="m">Arcada Concept sp. z o.o. · remonty obiektów zabytkowych · '
      f'wersja {WERSJA}</span>'
-     '<span class="m">NIP 665 305 91 60 · KRS 0001051640</span></div></div></footer>'
+     '<span class="m">NIP 665 305 91 60 · KRS 0001051640 · '
+     '<a class="inl" href="polityka-prywatnosci.html">Polityka prywatności</a></span>'
+     '</div></div></footer>'
      '<div class="nowa-wersja" id="nowaW">Nowa wersja strony - odświeżam\u2026</div>'
      '<button class="pg-start" id="pgStart" type="button" aria-haspopup="dialog">'
      '<svg width="14" height="18" viewBox="0 0 14 18" fill="none" aria-hidden="true">'

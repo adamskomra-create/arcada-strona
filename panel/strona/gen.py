@@ -3,6 +3,7 @@ import sys,os
 sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
 from b import *
 from mapa import mapka
+STAN_DOT='listopad 2026'
 OUT=os.environ.get('ARCADA_OUT','/home/claude/panel/wynik')
 
 def lokalizacja(lon,lat,nazwa,adres,dojazd,cel=None,epoka=None):
@@ -186,26 +187,126 @@ f'''<section><div class="w"><div class="nag" style="margin-bottom:24px"><h2>Co r
 +'</ol></div></section>')
 
 # ---------------- DOFINANSOWANIA ----------------
+DOT_FAQ=[
+ ('Czy osoba prywatna może dostać dotację na remont zabytku?',
+  'Tak, jeśli obiekt jest wpisany do rejestru zabytków. W programie ministra kultury „Ochrona zabytków” wnioski mogą składać osoby fizyczne, jednostki samorządu terytorialnego i inne jednostki organizacyjne będące właścicielem lub posiadaczem zabytku z rejestru albo mające go w trwałym zarządzie. Dotacje wojewódzkiego konserwatora działają na podobnej zasadzie.'),
+ ('Czy dostanę dotację na budynek z gminnej ewidencji, bez wpisu do rejestru?',
+  'Nie z programu ministra ani z dotacji wojewódzkiego konserwatora - te dotyczą obiektów wpisanych do rejestru. Część gmin prowadzi natomiast własne programy, które obejmują również obiekty z gminnej ewidencji zabytków. To trzeba sprawdzić w konkretnej gminie.'),
+ ('Ile wynosi dofinansowanie?',
+  'W programie ministra dotacja pokrywa co do zasady do 50 procent nakładów, a w przypadkach uzasadnionych szczególną wartością zabytku albo jego złym stanem zachowania może być wyższa. Wysokość dotacji wojewódzkiego konserwatora i dotacji gminnych zależy od regulaminu i budżetu danego naboru.'),
+ ('Czy można dostać pieniądze na prace już wykonane?',
+  'Tak, w trybie refundacji. Program ministra prowadzi osobny nabór na refundację nakładów poniesionych w latach poprzedzających rok złożenia wniosku. Warunkiem jest, żeby prace były prowadzone legalnie, czyli na podstawie pozwolenia konserwatorskiego.'),
+ ('Kiedy składa się wnioski?',
+  'Wnioski na prace planowane w kolejnym roku składa się jesienią roku poprzedzającego - u ministra zwykle w październiku i na początku listopada, u wojewódzkich konserwatorów najczęściej do końca listopada. Nabory na refundacje przypadają na pierwszą połowę roku. Dokładne terminy ogłaszają urzędy i trzeba je sprawdzać na bieżąco.'),
+ ('Czy gwarantujecie przyznanie dotacji?',
+  'Nie. Decyzję podejmuje urząd i w każdym naborze wnioski konkurują ze sobą. Odpowiadamy za kompletność dokumentacji, zgodność z regulaminem i terminowość złożenia - czyli za to, co da się kontrolować.'),
+]
+
 def p_dot():
     rows=''.join(f'<tr><td>{a}</td><td class="c">{b}</td><td class="c">{c}</td></tr>' for a,b,c in DOT)
+    faq=''.join(f'<details><summary>{q}</summary><p>{o}</p></details>' for q,o in DOT_FAQ)
     return (blok('Dofinansowania','Remont zabytku rzadko płaci się z własnej kieszeni',
-                 'Trzy ścieżki, z których korzystają nasi klienci. Sprawdzamy wszystkie i mówimy, która w Waszym przypadku ma sens.',cta=False,maly=True),
-f'''<section><div class="w">
+                 'Cztery ścieżki finansowania i jeden mechanizm podatkowy. Sprawdzamy wszystkie '
+                 'i mówimy, która w Waszym przypadku ma sens.',cta=False,maly=True),
+f"""<section><div class="w">
 <table><thead><tr><th scope="col">Źródło</th><th scope="col">Kto składa wniosek</th><th scope="col">Kiedy</th></tr></thead><tbody>{rows}</tbody></table>
-<div class="g2">
-<div class="boks"><h2>Co robimy my</h2><ul>
-<li>Sprawdzamy status ochrony i to, czy obiekt kwalifikuje się do programu</li>
+<div class="ob-ukl" style="margin-top:46px">
+<div class="ob-tresc art">
+<h2 id="minister">Program ministra kultury „Ochrona zabytków”</h2>
+<p>Największy krajowy program dla obiektów wpisanych do rejestru zabytków. Finansuje prace
+konserwatorskie, restauratorskie i roboty budowlane. Wnioski mogą składać osoby fizyczne,
+jednostki samorządu terytorialnego oraz inne jednostki organizacyjne będące właścicielem
+lub posiadaczem zabytku z rejestru albo mające go w trwałym zarządzie.</p>
+<p>Program prowadzi dwa nabory w roku: na prace planowane - ogłaszany jesienią roku
+poprzedzającego - i na refundację nakładów już poniesionych, w pierwszej połowie roku.
+W edycji na 2026 rok budżet programu wyniósł ponad 200 mln zł
+(<a class="inl" href="https://www.gov.pl/web/kultura/ochrona-zabytkow-2026" rel="noopener" target="_blank">gov.pl</a>).</p>
+<p>Dotacja pokrywa co do zasady do 50 procent nakładów. W przypadkach uzasadnionych szczególną
+wartością zabytku albo jego złym stanem zachowania może być wyższa.</p>
+
+<h2 id="wkz">Dotacja wojewódzkiego konserwatora zabytków</h2>
+<p>Każde województwo ma własny budżet, własny regulamin i własny nabór. Dotyczy wyłącznie
+obiektów wpisanych do rejestru zabytków - wpis do gminnej ewidencji nie wystarcza. Terminy
+są zbliżone w całym kraju: nabór na prace planowane w kolejnym roku prowadzi się zwykle
+w październiku i listopadzie, z terminem na koniec listopada, a nabór na refundacje
+w pierwszej połowie roku.</p>
+<p>Dla obiektów w Wielkopolsce właściwy jest
+<a class="inl" href="https://poznan.wuoz.gov.pl/dotacje/dotacje-2027" rel="noopener" target="_blank">Wielkopolski Wojewódzki Konserwator Zabytków</a>.
+Pracujemy w całej Polsce, więc wniosek przygotowujemy pod regulamin właściwego województwa.</p>
+
+<h2 id="gmina">Dotacja gminy albo miasta</h2>
+<p>Gminy mogą udzielać dotacji na podstawie uchwały rady gminy. To ścieżka najczęściej pomijana,
+a często najłatwiejsza: budżety są mniejsze, ale konkurencja też, a część gmin obejmuje
+dotacją również obiekty z gminnej ewidencji zabytków, nie tylko z rejestru. Nabory ogłaszane
+są zwykle jesienią, na rok następny, a regulaminy wymagają zakończenia i odbioru prac
+w roku, na który przyznano środki.</p>
+
+<h2 id="rpoz">Rządowy Program Odbudowy Zabytków</h2>
+<p>Program obsługiwany przez Bank Gospodarstwa Krajowego, w którym wnioski składają jednostki
+samorządu terytorialnego - także na obiekty należące do innych właścicieli, w trybie dotacji
+udzielanej przez gminę. Dofinansowanie sięgało 98 procent wartości inwestycji. Przeprowadzono
+dwa nabory w 2023 roku; na {STAN_DOT} nowy nabór nie został ogłoszony, a środki z poprzednich
+edycji są nadal rozliczane
+(<a class="inl" href="https://www.bgk.pl/programy-i-fundusze/programy/rzadowy-program-odbudowy-zabytkow/" rel="noopener" target="_blank">BGK</a>).</p>
+<p>Jeśli Wasz obiekt należy do parafii albo osoby prywatnej, droga wiedzie przez gminę -
+i trzeba zacząć rozmowę z gminą wcześnie, bo to ona składa wniosek.</p>
+
+<h2 id="ulga">Ulga podatkowa w PIT</h2>
+<p>Osobno od dotacji działa odliczenie w podatku dochodowym wydatków na prace przy zabytku
+wpisanym do rejestru. Zasady i limity zmieniały się od wprowadzenia ulgi, a warunkiem jest
+między innymi posiadanie pozwolenia i zaświadczenia konserwatora zabytków. Aktualne brzmienie
+przepisów znajdziecie na
+<a class="inl" href="https://podatki.gov.pl/ulgi-i-odliczenia/ulga-na-zabytki-pit" rel="noopener" target="_blank">podatki.gov.pl</a>.
+Nie doradzamy podatkowo - przy planowaniu wydatków pod ulgę warto rozmawiać z doradcą.</p>
+
+<h2 id="warunki">Czego dotacja nie obejmie</h2>
+<ul>
+<li>Prac wykonanych bez wymaganego pozwolenia konserwatorskiego. To wyklucza także refundację.</li>
+<li>Obiektów bez wpisu do rejestru - w programie ministra i u konserwatora wojewódzkiego.</li>
+<li>Prac, które nie mieszczą się w definicji prac konserwatorskich, restauratorskich
+i robót budowlanych przy zabytku. Wyposażenie i aranżacja wnętrz zwykle nie przechodzą.</li>
+<li>Kosztów poniesionych przed podpisaniem umowy dotacyjnej, jeśli regulamin tego nie dopuszcza.</li>
+</ul>
+
+<h2 id="rytm">Rytm roku</h2>
+<table><thead><tr><th scope="col">Okres</th><th scope="col">Co się dzieje</th></tr></thead><tbody>
+<tr><td>Wiosna i lato</td><td class="c">badania, projekt, pozwolenie konserwatorskie, kosztorys</td></tr>
+<tr><td>Jesień</td><td class="c">wnioski o dotacje na prace planowane w kolejnym roku</td></tr>
+<tr><td>Zima</td><td class="c">rozstrzygnięcia naborów, umowy dotacyjne</td></tr>
+<tr><td>Kolejny rok</td><td class="c">realizacja prac, odbiór i rozliczenie w terminie z regulaminu</td></tr>
+</tbody></table>
+<p>Wniosek składa się na prace, które mają już projekt i pozwolenie. Dlatego praktyczny moment
+na start to wiosna roku poprzedzającego, nie jesień.</p>
+
+<div class="art-faq"><h2 id="faq">Pytania o dofinansowania</h2>{faq}</div>
+
+<div class="art-zrodla"><span class="m">Źródła</span><ul>
+<li><a class="inl" href="https://www.gov.pl/web/kultura/ochrona-zabytkow-2026" rel="noopener" target="_blank">Program „Ochrona zabytków” - Ministerstwo Kultury i Dziedzictwa Narodowego</a></li>
+<li><a class="inl" href="https://poznan.wuoz.gov.pl/dotacje/dotacje-2027" rel="noopener" target="_blank">Dotacje Wielkopolskiego Wojewódzkiego Konserwatora Zabytków</a></li>
+<li><a class="inl" href="https://www.bgk.pl/programy-i-fundusze/programy/rzadowy-program-odbudowy-zabytkow/" rel="noopener" target="_blank">Rządowy Program Odbudowy Zabytków - BGK</a></li>
+<li><a class="inl" href="https://podatki.gov.pl/ulgi-i-odliczenia/ulga-na-zabytki-pit" rel="noopener" target="_blank">Ulga na zabytki w PIT - podatki.gov.pl</a></li>
+</ul></div>
+</div>
+<aside class="ob-dane">
+<span class="m">Co robimy my</span>
+<ul style="margin:10px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:8px;font-size:14.5px;line-height:1.45">
+<li>Sprawdzamy status ochrony i kwalifikowalność obiektu</li>
 <li>Kompletujemy dokumentację techniczną do wniosku</li>
 <li>Pilnujemy terminów naborów</li>
-<li>Przygotowujemy dokumenty do rozliczenia przyznanych środków</li></ul></div>
-<div class="boks"><h2>Czego potrzebujemy od Was</h2><ul>
-<li>Decyzję o wpisie do rejestru zabytków</li>
+<li>Przygotowujemy dokumenty do rozliczenia</li></ul>
+<div style="margin-top:22px;border-top:1px solid {LIN};padding-top:18px">
+<span class="m">Czego potrzebujemy od Was</span>
+<ul style="margin:10px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:8px;font-size:14.5px;line-height:1.45">
+<li>Decyzję o wpisie do rejestru</li>
 <li>Dokument własności obiektu</li>
 <li>Zgodę na kontakt z urzędem w Waszym imieniu</li>
-<li>Czas: wnioski na prace planowane składa się jesienią roku poprzedzającego</li></ul></div></div>
-<p class="cicha" style="margin-top:22px;max-width:62ch">Nie obiecujemy przyznania dotacji. Decyzję podejmuje urząd, my odpowiadamy za kompletność i terminowość dokumentów.</p>
-<p style="margin-top:34px"><a class="btn" href="kontakt.html">Sprawdźmy Wasz obiekt</a></p>
-</div></section>''')
+<li>Czas: start wiosną roku poprzedzającego</li></ul></div>
+<div style="margin-top:22px;border-top:1px solid {LIN};padding-top:18px">
+<p class="cicha" style="font-size:14.5px;line-height:1.5">Nie obiecujemy przyznania dotacji. Decyzję podejmuje urząd, my odpowiadamy za kompletność i terminowość dokumentów.</p>
+<p style="margin-top:14px"><a class="btn" href="kontakt.html">Sprawdźmy Wasz obiekt</a></p></div>
+<p class="m" style="margin-top:20px">Stan na {STAN_DOT}</p>
+</aside>
+</div></div></section>""")
 
 # ---------------- ZESPOL ----------------
 def p_zespol():
@@ -243,6 +344,123 @@ f"""<section><div class="w">
 <div class="nag"><span class="m">Pytania</span><h2>O co pytają najczęściej</h2></div>
 <div style="margin-top:30px">{faq}<div style="border-top:1px solid {LIN}"></div></div></div></section>""")
 
+# ---------------- POLITYKA PRYWATNOSCI ----------------
+def p_prywatnosc():
+    return (blok('Dokumenty','Polityka prywatności',
+                 'Kto przetwarza Wasze dane, w jakim celu, jak długo i jakie macie prawa. '
+                 'Krótko, bo zbieramy niewiele.',cta=False,maly=True),
+f"""<section class="art-sekcja"><div class="w">
+<div class="ob-ukl">
+<div class="ob-tresc art">
+<p class="lead">Ta strona nie używa plików cookies, nie prowadzi analityki i nie przekazuje danych
+żadnym serwisom zewnętrznym. Jedyne dane osobowe, jakie możemy od Was otrzymać, to te,
+które sami podacie w formularzu kontaktowym, w mailu albo w rozmowie telefonicznej.</p>
+
+<h2 id="administrator">Administrator danych</h2>
+<p>Administratorem danych osobowych jest <strong>Arcada Concept sp. z o.o.</strong>,
+ul. Wrzosowa 3, 62-571 Żychlin, NIP 665 305 91 60, KRS 0001051640.</p>
+<p>Kontakt w sprawach dotyczących danych:
+<a class="inl" href="mailto:arcada.concept@gmail.com">arcada.concept@gmail.com</a>,
+telefon <a class="inl" href="tel:+48693429479">+48 693 429 479</a>.</p>
+
+<h2 id="jakie-dane">Jakie dane zbieramy</h2>
+<ul>
+<li><strong>Z formularza kontaktowego:</strong> imię i nazwisko, adres e-mail, numer telefonu
+(opcjonalnie), rodzaj obiektu i treść opisu, który wpiszecie.</li>
+<li><strong>Z korespondencji i rozmów:</strong> dane, które sami podacie, w tym informacje
+o obiekcie i jego lokalizacji.</li>
+<li><strong>Z logów serwera:</strong> adres IP, data i godzina zapytania, typ przeglądarki.
+Te dane zapisuje serwer hostingowy i służą wyłącznie do zapewnienia bezpieczeństwa
+oraz diagnostyki awarii.</li>
+</ul>
+<div class="uwaga"><p>Formularz kontaktowy zacznie wysyłać wiadomości po uruchomieniu skrzynki
+w domenie arcadaconcept.pl. Do tego czasu nie zbieramy przez niego żadnych danych.</p></div>
+
+<h2 id="cel">W jakim celu i na jakiej podstawie</h2>
+<table><thead><tr><th scope="col">Cel</th><th scope="col">Podstawa prawna</th></tr></thead><tbody>
+<tr><td>Odpowiedź na zapytanie i przedstawienie oferty</td><td class="c">art. 6 ust. 1 lit. b RODO - działania przed zawarciem umowy</td></tr>
+<tr><td>Wykonanie umowy i prowadzenie dokumentacji prac</td><td class="c">art. 6 ust. 1 lit. b RODO</td></tr>
+<tr><td>Rozliczenia podatkowe i księgowe</td><td class="c">art. 6 ust. 1 lit. c RODO - obowiązek prawny</td></tr>
+<tr><td>Bezpieczeństwo serwisu, dochodzenie roszczeń</td><td class="c">art. 6 ust. 1 lit. f RODO - uzasadniony interes</td></tr>
+</tbody></table>
+<p>Podanie danych jest dobrowolne, ale bez adresu e-mail albo numeru telefonu nie możemy
+odpowiedzieć na wiadomość.</p>
+
+<h2 id="jak-dlugo">Jak długo przechowujemy</h2>
+<ul>
+<li>Korespondencja, która nie doprowadziła do współpracy: do dwóch lat od ostatniego kontaktu.</li>
+<li>Dane klientów i dokumentacja prac: przez okres wykonywania umowy, a następnie przez czas
+wymagany przepisami podatkowymi i okresem przedawnienia roszczeń.</li>
+<li>Logi serwera: zgodnie z polityką dostawcy hostingu, zwykle kilka miesięcy.</li>
+</ul>
+
+<h2 id="komu">Komu przekazujemy dane</h2>
+<p>Nie sprzedajemy i nie udostępniamy danych w celach marketingowych. Dane mogą trafić wyłącznie do:</p>
+<ul>
+<li>dostawcy hostingu i poczty, na którego serwerach działa strona i skrzynka e-mail,</li>
+<li>biura rachunkowego, w zakresie niezbędnym do rozliczeń,</li>
+<li>urzędów i organów, gdy prowadzimy sprawę w Waszym imieniu - wyłącznie na podstawie
+Waszego upoważnienia i w zakresie, który z niego wynika,</li>
+<li>organów publicznych, gdy wynika to z przepisów prawa.</li>
+</ul>
+<p>Nie przekazujemy danych poza Europejski Obszar Gospodarczy.</p>
+
+<h2 id="cookies">Pliki cookies i narzędzia zewnętrzne</h2>
+<p>Serwis nie zapisuje plików cookies, nie korzysta z narzędzi analitycznych ani z wtyczek
+serwisów społecznościowych. Czcionki i obrazy pobierane są z tego samego serwera, na którym
+stoi strona - przeglądarka nie wysyła zapytań do firm trzecich. Dlatego nie wyświetlamy
+banera zgody na cookies: nie ma na co się zgadzać.</p>
+<p>Jeśli w przyszłości dodamy narzędzie analityczne, ta strona zostanie zaktualizowana przed
+jego uruchomieniem.</p>
+
+<h2 id="prawa">Wasze prawa</h2>
+<p>W odniesieniu do swoich danych macie prawo do:</p>
+<ul>
+<li>dostępu do danych i otrzymania ich kopii,</li>
+<li>sprostowania danych nieprawidłowych,</li>
+<li>usunięcia danych, jeśli nie mamy podstawy do dalszego przetwarzania,</li>
+<li>ograniczenia przetwarzania,</li>
+<li>wniesienia sprzeciwu wobec przetwarzania opartego na uzasadnionym interesie,</li>
+<li>przenoszenia danych,</li>
+<li>wniesienia skargi do Prezesa Urzędu Ochrony Danych Osobowych.</li>
+</ul>
+<p>Żądanie wystarczy przesłać na adres e-mail podany wyżej. Odpowiadamy w terminie
+wynikającym z RODO, czyli zwykle w ciągu miesiąca.</p>
+
+<h2 id="profilowanie">Profilowanie i decyzje automatyczne</h2>
+<p>Nie profilujemy i nie podejmujemy wobec Was decyzji w sposób automatyczny.</p>
+
+<h2 id="zmiany">Zmiany polityki</h2>
+<p>Jeśli zmienimy zakres zbieranych danych albo narzędzia używane na stronie, zaktualizujemy
+ten dokument. Data ostatniej aktualizacji jest podana na dole strony, w numerze wersji.</p>
+</div>
+<aside class="ob-dane">
+<span class="m">W skrócie</span>
+<ul style="margin:10px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:8px;font-size:14.5px;line-height:1.45">
+<li>Brak cookies i analityki</li>
+<li>Brak skryptów firm trzecich</li>
+<li>Dane tylko z formularza, maila i rozmowy</li>
+<li>Bez przekazywania poza EOG</li></ul>
+<div style="margin-top:22px;border-top:1px solid {LIN};padding-top:18px">
+<span class="m">W tekście</span><nav class="spis" aria-label="Spis treści">
+<a href="#administrator">Administrator danych</a>
+<a href="#jakie-dane">Jakie dane zbieramy</a>
+<a href="#cel">Cel i podstawa prawna</a>
+<a href="#jak-dlugo">Okres przechowywania</a>
+<a href="#komu">Odbiorcy danych</a>
+<a href="#cookies">Cookies i narzędzia</a>
+<a href="#prawa">Wasze prawa</a>
+<a href="#profilowanie">Profilowanie</a>
+<a href="#zmiany">Zmiany polityki</a></nav></div>
+<p class="m" style="margin-top:20px">Stan na listopad 2026</p>
+</aside>
+</div></div></section>""")
+
+# ---------------- PORADNIK ----------------
+def p_poradnik():
+    import poradnik as _por
+    return _por.indeks()
+
 # ---------------- KONTAKT ----------------
 def p_kontakt():
     return (blok('Kontakt','Macie obiekt pod ochroną konserwatora?',
@@ -265,7 +483,53 @@ f'''<section><div class="w"><div class="g2" style="margin-top:0;max-width:980px"
 <span class="m" style="display:block;margin-top:22px">E-mail</span><p style="margin-top:2px"><a class="inl" href="mailto:arcada.concept@gmail.com">arcada.concept@gmail.com</a></p>
 <span class="m" style="display:block;margin-top:14px">Telefon</span><p style="margin-top:2px"><a class="inl" href="tel:+48693429479">+48 693 429 479</a></p>
 <span class="m" style="display:block;margin-top:22px">Odpowiadamy</span><p class="cicha" style="margin-top:6px">W ciągu dwóch dni roboczych.</p>
-</div></div></div></section>''')
+<span class="m" style="display:block;margin-top:22px">Obszar</span><p class="cicha" style="margin-top:6px">Cała Polska. Dojeżdżamy na wizję lokalną.</p>
+</div></div></div></section>
+<section class="szara"><div class="w">
+<div class="ob-ukl">
+<div class="ob-tresc art">
+<h2 id="co-napisac">Co warto napisać w pierwszej wiadomości</h2>
+<p>Im więcej z tych rzeczy podacie od razu, tym konkretniejsza będzie odpowiedź. Nie musicie mieć wszystkiego - piszcie to, co wiecie.</p>
+<ul>
+<li><strong>Gdzie jest budynek.</strong> Miejscowość i gmina wystarczą. Numer działki przyspiesza sprawdzenie statusu ochrony.</li>
+<li><strong>Jaka forma ochrony.</strong> Wpis do rejestru zabytków, gminna ewidencja, strefa ochrony w planie, albo „nie wiem” - to też jest odpowiedź i potrafimy ją sprawdzić.</li>
+<li><strong>Co chcecie zrobić.</strong> Zabezpieczyć dach, przystosować do nowej funkcji, przygotować wniosek o dotację, wykonać inwentaryzację.</li>
+<li><strong>Na kiedy.</strong> Jeśli celujecie w konkretny nabór dotacyjny, podajcie który - terminy decydują o kolejności prac.</li>
+<li><strong>Co już jest.</strong> Projekt, ekspertyza, decyzja o wpisie, wcześniejsze pozwolenia, dokumentacja z poprzednich remontów.</li>
+<li><strong>Zdjęcia.</strong> Elewacje z czterech stron i miejsca, które Was niepokoją. Zwykłe zdjęcia telefonem są w porządku.</li>
+</ul>
+<h2 id="jak-to-idzie">Jak wygląda pierwszy kontakt</h2>
+<ol>
+<li><strong>Odpowiedź na maila, do dwóch dni roboczych.</strong> Piszemy, czego brakuje, żeby ocenić sprawę, i czy to obiekt, przy którym możemy pomóc.</li>
+<li><strong>Rozmowa.</strong> Dwadzieścia minut telefonu zwykle wystarcza, żeby ustalić zakres i kolejność.</li>
+<li><strong>Wizja lokalna.</strong> Oględziny na miejscu, z pomiarem, jeśli od razu ma sens. Dojeżdżamy w całej Polsce.</li>
+<li><strong>Zakres i wycena.</strong> Pisemnie, z podziałem na etapy i z informacją, co jest obowiązkowe, a co można odłożyć.</li>
+</ol>
+<div class="uwaga"><p>Nie wyceniamy remontu zabytku przez telefon i nie podajemy ceny za metr. Powody opisaliśmy w tekście <a class="inl" href="poradnik-ile-kosztuje-remont-zabytku.html">Ile kosztuje remont zabytku</a>.</p></div>
+<h2 id="kiedy-pisac">Kiedy warto napisać wcześniej niż później</h2>
+<ul>
+<li>Przed zakupem obiektu - ekspertyza przed podpisaniem jest najtańszą pozycją w całym procesie</li>
+<li>Jesienią, jeśli planujecie wnioskować o dotację na prace w kolejnym roku</li>
+<li>Gdy pojawią się zacieki, pęknięcia albo ugięcia - prace zabezpieczające mają własny, krótszy tryb</li>
+<li>Gdy urząd wezwał Was do uzupełnienia wniosku i nie wiecie, czego dokładnie oczekuje</li>
+</ul>
+</div>
+<aside class="ob-dane">
+<span class="m">Siedziba</span>
+<p style="margin-top:6px;font-size:15.5px;line-height:1.5">Arcada Concept sp. z o.o.<br>ul. Wrzosowa 3<br>62-571 Żychlin</p>
+<div style="margin-top:20px;border-top:1px solid #DDE5E0;padding-top:16px">
+<span class="m">Telefony</span>
+<p style="margin-top:6px;font-size:15.5px;line-height:1.6">
+<a class="inl" href="tel:+48693429479">693 429 479</a><br>
+<a class="inl" href="tel:+48609103397">609 103 397</a></p></div>
+<div style="margin-top:20px;border-top:1px solid #DDE5E0;padding-top:16px">
+<span class="m">Dane rejestrowe</span>
+<p class="cicha" style="margin-top:6px;font-size:14.5px;line-height:1.5">NIP 665 305 91 60<br>KRS 0001051640</p></div>
+<div style="margin-top:20px;border-top:1px solid #DDE5E0;padding-top:16px">
+<span class="m">Dane z formularza</span>
+<p class="cicha" style="margin-top:6px;font-size:14.5px;line-height:1.5">Używamy ich tylko do odpowiedzi na wiadomość. Szczegóły w <a class="inl" href="polityka-prywatnosci.html">polityce prywatności</a>.</p></div>
+</aside>
+</div></div></section>''')
 
 def zbuduj_pliki(out=None):
   out=out or OUT
@@ -275,7 +539,9 @@ def zbuduj_pliki(out=None):
       ('uslugi.html','Usługi: ekspertyza, dokumentacja, roboty · Arcada','Ekspertyza przed zakupem, inwentaryzacja, formalności z konserwatorem, projekt, roboty budowlane i nadzór autorski.',p_uslugi),
       ('dofinansowania.html','Dofinansowania na remont zabytku · Arcada Concept','Program ministra, dotacja wojewódzkiego konserwatora, środki gminy. Co robimy my, czego potrzebujemy od Was.',p_dot),
       ('zespol.html','Architekci konserwatorscy · Arcada Concept','Dwóch architektów, obaj współwłaściciele. Projekt prowadzi osoba, z którą rozmawiacie - nie przekazujemy sprawy dalej. Remonty zabytków w całej Polsce.',p_zespol),
-      ('kontakt.html','Kontakt - wycena remontu zabytku · Arcada Concept','Napiszcie, co to za budynek i co chcecie zrobić. Odpowiadamy w ciągu dwóch dni roboczych.',p_kontakt)]
+      ('poradnik.html','Poradnik: remonty zabytków · Arcada Concept','Sześć tekstów o kosztach, formalnościach i materiałach w remoncie zabytku. Co decyduje o cenie i o tym, czy urząd wyda zgodę.',p_poradnik),
+      ('kontakt.html','Kontakt - wycena remontu zabytku · Arcada Concept','Napiszcie, co to za budynek i co chcecie zrobić. Odpowiadamy w ciągu dwóch dni roboczych.',p_kontakt),
+      ('polityka-prywatnosci.html','Polityka prywatności · Arcada Concept','Kto przetwarza dane z formularza, w jakim celu i jak długo. Serwis nie używa cookies ani narzędzi analitycznych.',p_prywatnosc)]
   import shutil
   n=0
   import json as _json
@@ -302,8 +568,8 @@ def zbuduj_pliki(out=None):
     elif fn=='uslugi.html':
       usl=[]
       for grupa,items in USL:
-        for t,d in items:
-          usl.append({"@type":"Service","name":t,"description":d,
+        for _nazwa,_opis in items:
+          usl.append({"@type":"Service","name":_nazwa,"description":_opis,
                       "serviceType":grupa,
                       "provider":{"@type":"Organization","name":"Arcada Concept sp. z o.o."},
                       "areaServed":{"@type":"Country","name":"Polska"}})
@@ -312,6 +578,32 @@ def zbuduj_pliki(out=None):
              "itemListElement":[{"@type":"ListItem","position":k+1,"item":u}
                                 for k,u in enumerate(usl)]}
       dd='<script type="application/ld+json">'+_json.dumps(lista,ensure_ascii=False)+'</script>'
+    elif fn=='dofinansowania.html':
+      faq={"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+            {"@type":"Question","name":q,
+             "acceptedAnswer":{"@type":"Answer","text":o}} for q,o in DOT_FAQ]}
+      dd='<script type="application/ld+json">'+_json.dumps(faq,ensure_ascii=False)+'</script>'
+    elif fn=='kontakt.html':
+      kon={"@context":"https://schema.org","@type":"ContactPage",
+           "name":"Kontakt - Arcada Concept","url":DOMENA+"kontakt.html",
+           "inLanguage":"pl-PL",
+           "mainEntity":{"@type":"Organization","name":"Arcada Concept sp. z o.o.",
+             "url":DOMENA,"email":"arcada.concept@gmail.com",
+             "address":{"@type":"PostalAddress","streetAddress":"ul. Wrzosowa 3",
+                        "postalCode":"62-571","addressLocality":"Żychlin","addressCountry":"PL"},
+             "contactPoint":[{"@type":"ContactPoint","telephone":"+48693429479",
+                              "contactType":"obsługa klienta","areaServed":"PL",
+                              "availableLanguage":"Polish"},
+                             {"@type":"ContactPoint","telephone":"+48609103397",
+                              "contactType":"obsługa klienta","areaServed":"PL",
+                              "availableLanguage":"Polish"}]}}
+      dd='<script type="application/ld+json">'+_json.dumps(kon,ensure_ascii=False)+'</script>'
+    elif fn=='poradnik.html':
+      try:
+        import poradnik as _por
+        dd=_por.dane_indeksu(DOMENA)
+      except Exception as e:
+        print('jsonld poradnika pominiety:',e)
     elif fn=='realizacje.html' and OBIEKTY_Z_BAZY:
       lista={"@context":"https://schema.org","@type":"ItemList",
              "name":"Realizacje Arcada Concept","numberOfItems":len(OBIEKTY_Z_BAZY),
@@ -335,6 +627,18 @@ def zbuduj_pliki(out=None):
       open(f"{out}/{pl}",'w',encoding='utf-8').write(
           strona('realizacje.html',tyt,op,zb,tr,plik=pl,dane=_dane_obiektu(o,pl)))
       n+=1
+  # strony artykulow poradnika
+  try:
+    import poradnik as _por
+    for i,a in enumerate(_por.ART):
+      zb,tr=_por.artykul(a,i)
+      pl=_por._plik(a)
+      open(f'{out}/{pl}','w',encoding='utf-8').write(
+          strona('poradnik.html',a['tyt'],a['opis'],zb,tr,plik=pl,
+                 dane=_por.dane_artykulu(a,DOMENA)))
+      n+=1
+  except Exception as e:
+    print('poradnik pominiety:',e)
   # narzedzie robocze: podglad na telefonie i tablecie
   try:
     from podglad import zbuduj as _podglad
@@ -360,9 +664,18 @@ def zbuduj_pliki(out=None):
   # mapa witryny
   import datetime as _dt
   dzis=_dt.date.today().isoformat()
-  adresy=[(DOMENA+fn,'1.0' if fn=='index.html' else '0.8') for fn,_,_,_ in PG]
+  def _waga(fn):
+    if fn=='index.html': return '1.0'
+    if fn=='polityka-prywatnosci.html': return '0.2'
+    return '0.8'
+  adresy=[(DOMENA+fn,_waga(fn)) for fn,_,_,_ in PG]
   if OBIEKTY_Z_BAZY:
     adresy+= [(DOMENA+_plik_obiektu(o),'0.7') for o in OBIEKTY_Z_BAZY]
+  try:
+    import poradnik as _por
+    adresy+= [(DOMENA+_por._plik(a),'0.7') for a in _por.ART]
+  except Exception:
+    pass
   mapa=('<?xml version="1.0" encoding="UTF-8"?>\n'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
         + ''.join(f'  <url><loc>{u}</loc><lastmod>{dzis}</lastmod>'
