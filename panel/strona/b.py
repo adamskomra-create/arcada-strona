@@ -262,7 +262,7 @@ body.bez-podgladu .pg-start{{display:none}}
 }}
 .zb.zob{{position:relative;overflow:hidden}}
 .zb-obraz{{position:absolute;right:0;top:0;bottom:0;width:46%;overflow:hidden}}
-.zb-obraz img{{width:100%;height:100%;object-fit:cover;display:block;opacity:.92}}
+.zb-obraz img{{width:100%;height:100%;object-fit:cover;display:block;opacity:.95;filter:brightness(1.12)}}
 .zb-obraz::before{{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
  background:linear-gradient(90deg,{ZIED} 0%,rgba(20,63,51,.72) 22%,rgba(20,63,51,.12) 62%,rgba(20,63,51,0) 100%)}}
 .zb-podpis{{position:absolute;z-index:2;right:18px;bottom:14px;font-family:'PM';font-size:11.5px;
@@ -274,8 +274,9 @@ body.bez-podgladu .pg-start{{display:none}}
  .zb-obraz::before{{background:linear-gradient(180deg,rgba(20,63,51,.86),rgba(20,63,51,.92))}}
  .zb.zob .in{{max-width:none}} .zb-podpis{{display:none}}}}
 /* --- strona obiektu: zdjecie, fakty, historia pod klinieciem --- */
-.ob-foto{{margin:30px 0 0}}
-.ob-foto img{{border-radius:20px;background:{SZA};aspect-ratio:3/2}}
+.ob-foto{{margin:30px 0 0;max-width:820px}}
+.ob-foto img{{border-radius:18px;background:#fff;border:1px solid {LIN};
+ width:100%;max-height:520px;object-fit:contain;padding:18px}}
 .ob-foto figcaption{{margin-top:10px;font-family:'PM';font-size:12px;letter-spacing:.09em;
  text-transform:uppercase;color:{MUT}}}
 .ob-foto img{{width:100%;object-fit:cover;display:block}}
