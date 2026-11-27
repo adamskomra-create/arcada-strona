@@ -109,6 +109,11 @@ a.inl{{display:inline-flex;align-items:center;min-height:44px;color:{ZIE};text-d
 .rece{{display:block;margin-top:10px;font-family:'PM';font-size:11px;letter-spacing:.13em;
  text-transform:uppercase;color:{MUT}}}
 .wpis.my .rece{{color:{ZIE}}}
+/* --- info o nowej wersji strony --- */
+.nowa-wersja{{position:fixed;left:18px;bottom:18px;z-index:75;background:{ZIED};color:{KREM};
+ border-radius:12px;padding:12px 18px;font-size:13.5px;box-shadow:0 8px 24px rgba(18,22,21,.22);
+ display:none}}
+.nowa-wersja.jest{{display:block}}
 /* --- podglad urzadzen: przycisk i okno, narzedzie robocze --- */
 .pg-start{{position:fixed;right:18px;bottom:18px;z-index:70;display:flex;align-items:center;gap:9px;
  background:{ZIED};color:{KREM};border:0;border-radius:999px;padding:11px 18px;cursor:pointer;
@@ -373,6 +378,30 @@ footer a.inl{{color:{KREM};min-height:40px}}
 """
 JS=r"""
 (function(){
+ if(window.self!==window.top) return;
+ var mojaWersja=null, sprawdzam=false;
+ function znacznik(r){ return (r.headers.get('etag')||'')+'|'+(r.headers.get('last-modified')||''); }
+ async function sprawdz(){
+  if(sprawdzam||document.hidden) return; sprawdzam=true;
+  try{
+   var r=await fetch(location.pathname+'?v='+Date.now(),{method:'HEAD',cache:'no-store'});
+   var z=znacznik(r);
+   if(!z){ sprawdzam=false; return; }
+   if(mojaWersja===null){ mojaWersja=z; }
+   else if(z!==mojaWersja){
+     var t=document.getElementById('nowaW'); if(t) t.classList.add('jest');
+     setTimeout(function(){ location.reload(); },700);
+     return;
+   }
+  }catch(e){}
+  sprawdzam=false;
+ }
+ sprawdz();
+ setInterval(sprawdz,15000);
+ document.addEventListener('visibilitychange',function(){ if(!document.hidden) sprawdz(); });
+})();
+
+(function(){
  if(window.self!==window.top){ document.body.classList.add('bez-podgladu'); return; }
  var st=document.getElementById('pgStart'), ok=document.getElementById('pgOkno'),
      ram=document.getElementById('pgRam'), ramka=document.getElementById('pgRamka'),
@@ -483,6 +512,9 @@ def strona(akt,tytul,opis,zb,tresc):
     return ('<!doctype html><html lang="pl"><head><meta charset="utf-8">'
      '<meta name="viewport" content="width=device-width, initial-scale=1">'
      '<meta name="robots" content="noindex,nofollow">'
+     '<meta http-equiv="cache-control" content="no-store, must-revalidate">'
+     '<meta http-equiv="pragma" content="no-cache">'
+     '<meta http-equiv="expires" content="0">'
      f'<title>{tytul}</title><meta name="description" content="{opis}">'
      f'<style>{CSS}</style></head><body>'
      '<a class="skip" href="#main">Przejdź do treści</a>'
@@ -502,6 +534,7 @@ def strona(akt,tytul,opis,zb,tresc):
      '</div></div>'
      '<div class="fdol"><span class="m">Arcada Concept sp. z o.o. · remonty obiektów zabytkowych</span>'
      '<span class="m">NIP 665 305 91 60 · KRS 0001051640</span></div></div></footer>'
+     '<div class="nowa-wersja" id="nowaW">Nowa wersja strony - odświeżam\u2026</div>'
      '<button class="pg-start" id="pgStart" type="button" aria-haspopup="dialog">'
      '<svg width="14" height="18" viewBox="0 0 14 18" fill="none" aria-hidden="true">'
      '<rect x="1" y="1" width="12" height="16" rx="2.5" stroke="currentColor" stroke-width="1.6"/>'
