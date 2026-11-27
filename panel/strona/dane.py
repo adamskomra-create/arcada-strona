@@ -21,6 +21,20 @@ FAQ=[('Czy mogę dostać dofinansowanie na prywatny dom wpisany do rejestru?','T
      ('Ile trwa przygotowanie dokumentacji?','Zależy od obiektu i od tego, jak szybko uzyskamy wypisy i decyzje z urzędu. Termin podajemy po wizji lokalnej, razem z zakresem prac.')]
 ZESPOL=[('Hubert Rybkowski','Architekt · współwłaściciel','[WYKSZTAŁCENIE]','[DOŚWIADCZENIE: lata pracy, rodzaje obiektów]','[UPRAWNIENIA: numer i izba]','+48 693 429 479'),
         ('Maciej Bartkowiak','Architekt · współwłaściciel','[WYKSZTAŁCENIE]','[DOŚWIADCZENIE: lata pracy, rodzaje obiektów]','[UPRAWNIENIA: numer i izba]','+48 609 103 397')]
+# info rozwijane po kliknieciu w architekta; puste nawiasy czekaja na dane od nich
+ZESPOL_INFO={
+ 'Hubert Rybkowski':{
+   'zaint':'Kolekcjoner sztuki.',
+   'foto':'hubert-kolekcja.webp',
+   'podpis':'Z kolekcji Huberta',
+   'prace':'[WYBRANE PRACE: obiekty, role, lata]'},
+ 'Maciej Bartkowiak':{
+   'zaint':'[ZAINTERESOWANIA]',
+   'foto':None,
+   'podpis':'',
+   'prace':'[WYBRANE PRACE: obiekty, role, lata]'},
+}
+
 KROKI=[('Wizja lokalna','Przyjeżdżamy, oglądamy obiekt i rozmawiamy o tym, co chcecie osiągnąć.'),
        ('Pomiar','Dron i skaner. Z pomiaru powstaje model, na którym opieramy projekt i kosztorys.'),
        ('Dokumentacja i pozwolenia','Projekt, wniosek do konserwatora, a jeśli trzeba - wniosek o dofinansowanie.'),

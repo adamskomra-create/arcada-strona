@@ -144,6 +144,48 @@ a.inl{{display:inline-flex;align-items:center;min-height:44px;color:{ZIE};text-d
 .wpis.my .kr{{background:{ZIE};border-color:{ZIE};box-shadow:0 0 0 5px #E4EEE9}}
 .wpis.my .data{{color:{ZIE};font-weight:500}}
 .wpis.pusty .data,.wpis.pusty h3{{color:{MUT}}}
+/* --- architekci: klikniecie rozwija panel z informacjami --- */
+.zesp{{display:grid;grid-template-columns:1fr;gap:34px;align-items:start;transition:grid-template-columns .3s}}
+.zesp-karty{{display:grid;grid-template-columns:1fr 1fr;gap:28px;max-width:840px}}
+.arch{{display:block;width:100%;text-align:left;padding:0;background:#fff;color:{INK};
+ border:1px solid {LIN};border-radius:18px;overflow:hidden;cursor:pointer;font:inherit;
+ transition:border-color .18s,box-shadow .18s}}
+.arch:hover{{border-color:#BFD2C8;box-shadow:0 10px 28px rgba(18,22,21,.07)}}
+.arch.akt{{border-color:{ZIE};order:-1}}
+.arch-tr{{padding:22px 24px 24px}}
+.arch-tr h3{{font-size:20px}}
+.arch-tr .m{{margin-top:6px}}
+.arch-dl{{margin-top:18px;font-size:14.5px;display:grid;grid-template-columns:112px 1fr;gap:9px 14px}}
+.arch-dl dt{{color:{MUT}}}
+.arch-wiecej{{display:none;margin-top:16px;font-size:14.5px}}
+.portret.pusty{{aspect-ratio:4/5;background:{SZA};display:flex;align-items:flex-end;padding:16px}}
+.zesp.otw{{grid-template-columns:330px 1fr;gap:40px}}
+.zesp.otw .zesp-karty{{grid-template-columns:1fr;max-width:none;gap:16px}}
+.zesp.otw .arch:not(.akt){{display:grid;grid-template-columns:78px 1fr;gap:14px;align-items:center;padding:12px}}
+.zesp.otw .arch:not(.akt) .portret,.zesp.otw .arch:not(.akt) .portret.pusty{{aspect-ratio:1;border-radius:12px;cursor:pointer}}
+.zesp.otw .arch:not(.akt) .arch-tr{{padding:0}}
+.zesp.otw .arch:not(.akt) .portret.pusty span{{display:none}}
+.zesp.otw .arch:not(.akt) .arch-tr h3{{font-size:16px}}
+.zesp.otw .arch:not(.akt) .arch-dl{{display:none}}
+.zesp.otw .arch:not(.akt) .arch-wiecej{{display:block;margin-top:4px}}
+.zesp.otw .arch.akt .arch-dl{{display:none}}
+.zesp-info{{background:{SZA};border-radius:20px;padding:30px 32px 34px}}
+.zesp-info h3{{font-size:23px}}
+.zesp-info .rola{{margin-top:6px}}
+.zesp-info dl{{margin-top:22px;font-size:15px;display:grid;grid-template-columns:132px 1fr;gap:11px 16px}}
+.zesp-info dt{{color:{MUT}}}
+.zesp-info .dzial{{margin-top:26px;padding-top:22px;border-top:1px solid {LIN}}}
+.zesp-info .dzial h4{{font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:{MUT};font-family:'PM';font-weight:400}}
+.zesp-info .dzial p{{margin-top:8px;font-size:15.5px;line-height:1.6}}
+.zesp-info figure{{margin-top:16px}}
+.zesp-info figure img{{width:100%;border-radius:14px;display:block}}
+.zesp-info figcaption{{margin-top:9px;font-size:13px;color:{MUT}}}
+.zesp-zamk{{float:right;background:none;border:0;cursor:pointer;color:{MUT};font:inherit;font-size:14px;padding:4px 6px}}
+.zesp-zamk:hover{{color:{ZIE}}}
+@media(max-width:900px){{.zesp.otw{{grid-template-columns:1fr}}
+ .zesp-karty{{grid-template-columns:1fr}}
+ .zesp-info dl{{grid-template-columns:1fr;gap:3px 0}}
+ .zesp-info dl dd{{margin-bottom:10px}}}}
 /* --- listing realizacji: mapa zbiorcza i karty obiektow --- */
 .mapa-wszystko{{display:grid;grid-template-columns:560px 1fr;gap:48px;align-items:start}}
 .mapa-wszystko a .pkt{{transition:r .18s}}
@@ -208,6 +250,48 @@ footer a.inl{{color:{KREM};min-height:40px}}
 @media (prefers-reduced-motion:reduce){{html{{scroll-behavior:auto}}@view-transition{{navigation:none}}}}
 """
 JS=r"""
+(function(){
+ var z=document.getElementById('zesp'), inf=document.getElementById('zinfo'),
+     dz=document.getElementById('zdane');
+ if(!z||!inf||!dz) return;
+ var D; try{D=JSON.parse(dz.textContent)}catch(e){return}
+ function esc(s){return String(s==null?'':s).replace(/[&<>]/g,function(c){
+   return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
+ function rys(o){
+  var h='<button class="zesp-zamk" type="button" id="zzamk" aria-label="Zamknij">Zamknij &times;</button>'
+   +'<h3>'+esc(o.imie)+'</h3><p class="m rola">'+esc(o.rola)+'</p>'
+   +'<dl><dt>Wykształcenie</dt><dd>'+esc(o.wyk)+'</dd>'
+   +'<dt>Doświadczenie</dt><dd>'+esc(o.dosw)+'</dd>'
+   +'<dt>Uprawnienia</dt><dd>'+esc(o.upr)+'</dd>'
+   +'<dt>Telefon</dt><dd><a class="inl" href="tel:'+esc(o.tel).replace(/\s/g,'')+'">'+esc(o.tel)+'</a></dd></dl>';
+  if(o.prace) h+='<div class="dzial"><h4>Wybrane prace</h4><p>'+esc(o.prace)+'</p></div>';
+  if(o.zaint){
+   h+='<div class="dzial"><h4>Poza pracą</h4><p>'+esc(o.zaint)+'</p>';
+   if(o.foto) h+='<figure><img src="img/'+esc(o.foto)+'" alt="'+esc(o.podpis||o.imie)+'" loading="lazy">'
+     +(o.podpis?'<figcaption>'+esc(o.podpis)+'</figcaption>':'')+'</figure>';
+   h+='</div>';
+  }
+  inf.innerHTML=h;
+  var zb=document.getElementById('zzamk');
+  if(zb) zb.addEventListener('click',zamknij);
+ }
+ function zamknij(){
+  z.classList.remove('otw'); inf.hidden=true; inf.innerHTML='';
+  [].forEach.call(z.querySelectorAll('.arch'),function(a){
+    a.classList.remove('akt'); a.setAttribute('aria-expanded','false')});
+ }
+ [].forEach.call(z.querySelectorAll('.arch'),function(a){
+  a.addEventListener('click',function(){
+   var k=+a.getAttribute('data-k'); var o=D[k]; if(!o) return;
+   if(a.classList.contains('akt')){zamknij();return}
+   [].forEach.call(z.querySelectorAll('.arch'),function(x){
+     x.classList.remove('akt'); x.setAttribute('aria-expanded','false')});
+   a.classList.add('akt'); a.setAttribute('aria-expanded','true');
+   rys(o); inf.hidden=false; z.classList.add('otw');
+  });
+ });
+})();
+
 (function(){
  var p=document.querySelectorAll('.portret');
  if(!p.length) return;

@@ -204,30 +204,39 @@ f'''<section><div class="w">
 
 # ---------------- ZESPOL ----------------
 def p_zespol():
+    import json
     FOTO={'Hubert Rybkowski':'hubert'}
-    def _kadr(n):
+    def _kadr(n,maly=False):
         k=FOTO.get(n)
         if not k:
-            return (f'<div style="aspect-ratio:4/5;background:{SZA};display:flex;align-items:flex-end;'
-                    f'padding:16px"><span class="m">[ZDJĘCIE PORTRETOWE]</span></div>')
+            return (f'<div class="portret pusty"><span class="m">[ZDJĘCIE]</span></div>')
         return (f'<div class="portret"><img class="foto" src="img/{k}-foto.webp" alt="{n}" loading="lazy">'
                 f'<img class="szkic" src="img/{k}-szkic.webp" alt="" aria-hidden="true" loading="lazy"></div>')
-    lu=''.join(f'''<div class="kar" style="padding:0">
-{_kadr(n)}
-<div style="padding:24px"><h3 style="font-size:20px">{n}</h3><p class="m" style="margin-top:6px">{rola}</p>
-<dl style="margin-top:18px;font-size:14.5px;display:grid;grid-template-columns:110px 1fr;gap:9px 14px">
-<dt style="color:{MUT}">Wykształcenie</dt><dd>{w}</dd>
-<dt style="color:{MUT}">Doświadczenie</dt><dd>{d}</dd>
-<dt style="color:{MUT}">Uprawnienia</dt><dd>{u}</dd>
-<dt style="color:{MUT}">Telefon</dt><dd><a class="inl" href="tel:{tel.replace(" ","")}">{tel}</a></dd></dl></div></div>''' for n,rola,w,d,u,tel in ZESPOL)
-    faq=''.join(f'<div style="border-top:1px solid {LIN};padding:22px 0"><h3>{q}</h3><p class="cicha" style="margin-top:7px;max-width:46em">{a}</p></div>' for q,a in FAQ)
+    kar=''
+    dane=[]
+    for i,(n,rola,w,d,u,tel) in enumerate(ZESPOL):
+        inf=ZESPOL_INFO.get(n,{})
+        kar+=(f'<button class="arch" type="button" data-k="{i}" aria-expanded="false" aria-controls="zinfo">'
+              f'{_kadr(n)}<div class="arch-tr"><h3>{n}</h3><p class="m">{rola}</p>'
+              f'<dl class="arch-dl"><dt>Wykształcenie</dt><dd>{w}</dd>'
+              f'<dt>Doświadczenie</dt><dd>{d}</dd><dt>Uprawnienia</dt><dd>{u}</dd></dl>'
+              f'<span class="inl arch-wiecej">Zobacz więcej</span></div></button>')
+        dane.append({'imie':n,'rola':rola,'wyk':w,'dosw':d,'upr':u,'tel':tel,
+                     'zaint':inf.get('zaint',''),'foto':inf.get('foto'),
+                     'podpis':inf.get('podpis',''),'prace':inf.get('prace','')})
+    faq=''.join(f'<div style="border-top:1px solid {LIN};padding:22px 0"><h3>{q}</h3>'
+                f'<p class="cicha" style="margin-top:7px;max-width:46em">{a}</p></div>' for q,a in FAQ)
     return (blok('Architekci','Projekt prowadzi osoba, z którą rozmawiacie',
                  'Dwóch architektów, obaj współwłaściciele. Nie przekazujemy sprawy dalej.',cta=False,maly=True),
-f'''<section><div class="w"><div class="g2" style="max-width:840px;margin-top:0">{lu}</div>
-<p class="cicha" style="margin-top:18px">Pola w nawiasach uzupełniamy po otrzymaniu danych od Was.</p></div></section>
+f"""<section><div class="w">
+<div class="zesp" id="zesp"><div class="zesp-karty">{kar}</div>
+<div class="zesp-info" id="zinfo" hidden></div></div>
+<p class="cicha" style="margin-top:20px">Pola w nawiasach uzupełniamy po otrzymaniu danych od Was.</p>
+<script type="application/json" id="zdane">{json.dumps(dane,ensure_ascii=False)}</script>
+</div></section>
 <section class="szara"><div class="w">
 <div class="nag"><span class="m">Pytania</span><h2>O co pytają najczęściej</h2></div>
-<div style="margin-top:30px">{faq}<div style="border-top:1px solid {LIN}"></div></div></div></section>''')
+<div style="margin-top:30px">{faq}<div style="border-top:1px solid {LIN}"></div></div></div></section>""")
 
 # ---------------- KONTAKT ----------------
 def p_kontakt():
