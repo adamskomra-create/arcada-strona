@@ -221,7 +221,7 @@ def p_zespol():
 <dt style="color:{MUT}">Uprawnienia</dt><dd>{u}</dd>
 <dt style="color:{MUT}">Telefon</dt><dd><a class="inl" href="tel:{tel.replace(" ","")}">{tel}</a></dd></dl></div></div>''' for n,rola,w,d,u,tel in ZESPOL)
     faq=''.join(f'<div style="border-top:1px solid {LIN};padding:22px 0"><h3>{q}</h3><p class="cicha" style="margin-top:7px;max-width:46em">{a}</p></div>' for q,a in FAQ)
-    return (blok('Zespół','Projekt prowadzi osoba, z którą rozmawiacie',
+    return (blok('Architekci','Projekt prowadzi osoba, z którą rozmawiacie',
                  'Dwóch architektów, obaj współwłaściciele. Nie przekazujemy sprawy dalej.',cta=False,maly=True),
 f'''<section><div class="w"><div class="g2" style="max-width:840px;margin-top:0">{lu}</div>
 <p class="cicha" style="margin-top:18px">Pola w nawiasach uzupełniamy po otrzymaniu danych od Was.</p></div></section>
@@ -260,7 +260,7 @@ def zbuduj_pliki(out=None):
       ('realizacje.html','Realizacje - Arcada Concept','Portfolio: kaplica cmentarna z kryptą w Kościelcu, zakres prac, inwestor, wartość kontraktu i poświadczenie odbioru.',p_realizacje),
       ('uslugi.html','Usługi - Arcada Concept','Ekspertyza przed zakupem, inwentaryzacja, formalności z konserwatorem, projekt, roboty budowlane i nadzór autorski.',p_uslugi),
       ('dofinansowania.html','Dofinansowania - Arcada Concept','Program ministra, dotacja wojewódzkiego konserwatora, środki gminy. Co robimy my, czego potrzebujemy od Was.',p_dot),
-      ('zespol.html','Zespół - Arcada Concept','Dwóch architektów, obaj współwłaściciele. Projekt prowadzi osoba, z którą rozmawiacie.',p_zespol),
+      ('zespol.html','Architekci - Arcada Concept','Dwóch architektów, obaj współwłaściciele. Projekt prowadzi osoba, z którą rozmawiacie.',p_zespol),
       ('kontakt.html','Kontakt - Arcada Concept','Napiszcie, co to za budynek i co chcecie zrobić. Odpowiadamy w ciągu dwóch dni roboczych.',p_kontakt)]
   import shutil
   n=0

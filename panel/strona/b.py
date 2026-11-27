@@ -18,7 +18,7 @@ def face(fam,pkg,w):
 F=''.join([face('AR','archivo',w) for w in (400,500,700)]+[face('PM','ibm-plex-mono',w) for w in (400,500)])
 
 STRONY=[('Start','index.html'),('Realizacje','realizacje.html'),('Usługi','uslugi.html'),
-        ('Dofinansowania','dofinansowania.html'),('Zespół','zespol.html'),('Kontakt','kontakt.html')]
+        ('Dofinansowania','dofinansowania.html'),('Architekci','zespol.html'),('Kontakt','kontakt.html')]
 
 CSS=F+f"""
 @view-transition{{navigation:auto}}
