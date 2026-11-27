@@ -44,7 +44,7 @@ except Exception: print(0)
 if [ "$PUSTA" = "0" ]; then
   mkdir -p "$DANE/zdjecia"
   docker cp "$ZIARNO/." arcada-panel:/ziarno >/dev/null
-  for S in zasiew_prawdziwe zasiew wczytaj_zdjecia; do
+  for S in zasiew_prawdziwe zasiew wczytaj_zdjecia zasiew_ciekawostki; do
     docker exec -e ARCADA_ZRODLA=/ziarno/demo -e ARCADA_ZRODLA_REAL=/ziarno/prawdziwe \
       arcada-panel python /app/app/$S.py >/dev/null 2>&1 || die "Zasiew przerwany na $S"
   done

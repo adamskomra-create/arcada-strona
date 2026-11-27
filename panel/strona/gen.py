@@ -27,8 +27,13 @@ def lokalizacja(lon,lat,nazwa,adres,dojazd,cel=None,epoka=None):
 
 def wpis(data,tyt,opis,kl='',tresc=''):
     dl=' dl' if len(data)>8 else ''
+    if kl=='ciek':
+        srodek=(f'<div class="ciek-k"><span class="et">Ciekawostka</span>'
+                f'<h4>{tyt}</h4><p>{opis}</p>{tresc}</div>')
+    else:
+        srodek=f'<h3>{tyt}</h3><p>{opis}</p>{tresc}'
     return (f'<div class="wpis {kl}"><span class="data{dl}">{data}</span><span class="kr"></span>'
-            f'<h3>{tyt}</h3><p>{opis}</p>{tresc}</div>')
+            f'{srodek}</div>')
 
 def fig(f,cap,alt,ratio='3 / 4',pos='50% 50%'):
     return (f'<figure><div style="aspect-ratio:{ratio};overflow:hidden;background:{SZA}">'
@@ -352,7 +357,7 @@ def _os(o):
         bufor=[]
     _bufdane=[]
     for w in o['wpisy']:
-        kl={'my':'my','pusty':'pusty'}.get(w['rodzaj'],'')
+        kl={'my':'my','pusty':'pusty','ciekawostka':'ciek'}.get(w['rodzaj'],'')
         opis=w['opis']
         dod=f'<span class="rece">{w["rece"]}</span>' if w['rece'] else ''
         if w['blok']=='lokalizacja' and o.get('adres'):
@@ -364,6 +369,8 @@ def _os(o):
         kawalek=wpis(w['data'],w['tytul'],opis,kl,dod)
         if kl=='my':
             bufor.append(kawalek); _bufdane.append(w)
+        elif kl=='ciek' and bufor:
+            bufor.append(kawalek)          # ciekawostka nie rozbija ramki remontu
         else:
             domknij(); _bufdane=[]; s+=kawalek
     domknij()
@@ -405,7 +412,7 @@ def p_realizacje_z_bazy(obiekty):
     for i,o in enumerate(obiekty):
         f=_oklad(o)
         obraz=(f'<div class="kar-foto"><img src="img/{f}" alt="{o["tytul"]}" loading="lazy"></div>'
-               if f else f'<div class="kar-foto pusta"><span class="m">[zdjęcie]</span></div>')
+               if f else f'<div class="kar-foto pusta"><span class="m">zdjęcia w przygotowaniu</span></div>')
         plak=('<span class="plakietka-demo">obiekt fikcyjny</span>' if o.get('demo') else '')
         lead=o.get('lead') or ''
         if len(lead)>140: lead=lead[:137].rsplit(' ',1)[0]+'…'
