@@ -27,3 +27,22 @@ przedstawiać jako referencji. Wszystkie strony mają `noindex`.
 
 Znikają w całości po kliknięciu „Usuń dane demo” w panelu i przebudowaniu
 strony. Realizacje prawdziwe zostają nietknięte.
+
+## Panel
+
+Katalog `panel/` to aplikacja redakcyjna (Python, Flask, SQLite). Instalacja
+na serwerze, jednorazowo, po tym jak `arcada-sync` pobierze repozytorium:
+
+```
+bash /opt/arcada-src/panel/deploy/instaluj.sh
+```
+
+Buduje obraz, startuje kontener `arcada-panel` i dopisuje `/panel` do Caddy.
+Baza i zdjęcia leżą w `/opt/arcada-panel/dane`, poza obrazem i poza tym
+repozytorium - przetrwają każdą aktualizację.
+
+### Kto zapisuje co
+
+- `www/` bez `strona/` - synchronizowane z tego repozytorium
+- `www/strona/` - generowane przez panel z bazy; gdy kontener `arcada-panel`
+  działa, `arcada-sync` omija ten katalog i go nie nadpisuje
