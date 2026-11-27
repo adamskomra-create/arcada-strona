@@ -85,24 +85,19 @@ a.inl{display:inline-flex;align-items:center;min-height:44px;color:#1F5C4A;text-
 .rece{display:block;margin-top:10px;font-family:'PM';font-size:11px;letter-spacing:.13em;
  text-transform:uppercase;color:#60666A}
 .wpis.my .rece{color:#1F5C4A}
-/* --- portret: łuk wymiata zdjęcie od dołu, jak kreska w sygnecie --- */
-@property --luk{syntax:'<percentage>';inherits:false;initial-value:0%}
-.portret{position:relative;aspect-ratio:4/5;overflow:hidden;background:#F6F8F7}
+/* --- portret: kursor prześwietla zdjęcie jak latarka, pod spodem łuki --- */
+@property --ps{syntax:'<number>';inherits:true;initial-value:1}
+.portret{position:relative;aspect-ratio:4/5;overflow:hidden;background:#F6F8F7;
+ --px:50%;--py:50%;--ps:1;cursor:crosshair}
 .portret img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 18%}
-.portret .foto{--luk:0%;
- -webkit-mask-image:radial-gradient(circle at 50% 112%,
-   transparent 0 var(--luk), #000 calc(var(--luk) + 4%) 100%);
- mask-image:radial-gradient(circle at 50% 112%,
-   transparent 0 var(--luk), #000 calc(var(--luk) + 4%) 100%);
- transition:--luk .72s cubic-bezier(.33,1,.68,1)}
-.portret:hover .foto,.portret:focus-within .foto{--luk:132%}
-.portret::after{content:'';position:absolute;inset:0;pointer-events:none;
- background:radial-gradient(circle at 50% 112%,transparent 0 calc(var(--f,0%) - .5%),
-   #1F5C4A2E calc(var(--f,0%) - .5%) calc(var(--f,0%) + .6%), transparent calc(var(--f,0%) + .6%));
- opacity:0;transition:opacity .25s}
-.portret:hover::after{opacity:1}
-@media (hover:none){.portret .foto{--luk:0%!important}}
-@media (prefers-reduced-motion:reduce){.portret .foto{transition:none}}
+.portret .foto{
+ -webkit-mask-image:radial-gradient(circle at var(--px) var(--py),
+   rgba(0,0,0,var(--ps)) 0 4mm, rgba(0,0,0,calc(var(--ps)*.45 + .55)) 7mm, #000 11mm);
+ mask-image:radial-gradient(circle at var(--px) var(--py),
+   rgba(0,0,0,var(--ps)) 0 4mm, rgba(0,0,0,calc(var(--ps)*.45 + .55)) 7mm, #000 11mm);
+ transition:--ps .2s linear}
+.portret.swieci{--ps:.26}
+@media (hover:none){.portret{cursor:default} .portret.swieci{--ps:1}}
 .plakietka-demo{display:inline-block;margin-top:14px;font-family:'PM';font-size:11.5px;
  letter-spacing:.14em;text-transform:uppercase;color:#6B4310;background:#FDF6EC;
  border:1px solid #EBD5B3;border-radius:3px;padding:5px 10px}
@@ -169,6 +164,22 @@ footer a.inl{color:#F2F5F3;min-height:40px}
 <span class="m" style="display:block;margin-top:14px">Telefon</span><p style="margin-top:2px"><a class="inl" href="tel:+48693429479">+48 693 429 479</a></p>
 <span class="m" style="display:block;margin-top:22px">Odpowiadamy</span><p class="cicha" style="margin-top:6px">W ciągu dwóch dni roboczych.</p>
 </div></div></div></section></main><footer><svg class="" viewBox="11 13 98 102" aria-hidden="true" style="position:absolute;left:-120px;bottom:-220px;width:540px;height:auto;pointer-events:none"><path d="M50,112 V62 A10,10 0 0 1 70,62 V112" fill="none" stroke="rgba(242,245,243,.08)" stroke-width="6" stroke-linecap="round" stroke-dasharray="400"/><path d="M41,112 V62 A19,19 0 0 1 79,62 V112" fill="none" stroke="rgba(242,245,243,.08)" stroke-width="6" stroke-linecap="round" stroke-dasharray="62 7 300"/><path d="M32,112 V62 A28,28 0 0 1 88,62 V112" fill="none" stroke="rgba(242,245,243,.08)" stroke-width="6" stroke-linecap="round" stroke-dasharray="30 6 90 6 300"/><path d="M23,112 V62 A37,37 0 0 1 97,62 V112" fill="none" stroke="rgba(242,245,243,.08)" stroke-width="6" stroke-linecap="round" stroke-dasharray="120 7 300"/><path d="M14,112 V62 A46,46 0 0 1 106,62 V112" fill="none" stroke="rgba(242,245,243,.08)" stroke-width="6" stroke-linecap="round" stroke-dasharray="48 6 70 6 300"/></svg><div class="w"><div class="fgor"><span style="display:inline-flex;align-items:center;gap:10px"><svg class="" viewBox="11 13 98 102" aria-hidden="true" style="height:32px;width:auto;flex:none"><path d="M50,112 V62 A10,10 0 0 1 70,62 V112" fill="none" stroke="#F2F5F3" stroke-width="4.8" stroke-linecap="round" stroke-dasharray="400"/><path d="M41,112 V62 A19,19 0 0 1 79,62 V112" fill="none" stroke="#F2F5F3" stroke-width="4.8" stroke-linecap="round" stroke-dasharray="62 7 300"/><path d="M32,112 V62 A28,28 0 0 1 88,62 V112" fill="none" stroke="#F2F5F3" stroke-width="4.8" stroke-linecap="round" stroke-dasharray="30 6 90 6 300"/><path d="M23,112 V62 A37,37 0 0 1 97,62 V112" fill="none" stroke="#F2F5F3" stroke-width="4.8" stroke-linecap="round" stroke-dasharray="120 7 300"/><path d="M14,112 V62 A46,46 0 0 1 106,62 V112" fill="none" stroke="#F2F5F3" stroke-width="4.8" stroke-linecap="round" stroke-dasharray="48 6 70 6 300"/></svg><span style="display:flex;flex-direction:column;line-height:1;gap:3px"><span style="font-size:17px;font-weight:500;letter-spacing:.2em;color:#F2F5F3">ARCADA</span><span style="font-size:9px;letter-spacing:.33em;color:rgba(242,245,243,.72)">CONCEPT</span></span></span><div style="display:flex;flex-wrap:wrap;gap:46px"><div><div class="m">Kontakt</div><div style="margin-top:4px;display:flex;flex-direction:column;font-size:14.5px"><a class="inl" href="tel:+48693429479">693 429 479</a><a class="inl" href="mailto:arcada.concept@gmail.com">arcada.concept@gmail.com</a></div></div><div><div class="m">Siedziba</div><div style="margin-top:10px;font-size:14.5px;line-height:1.55">ul. Wrzosowa 3<br>62-571 Żychlin</div></div></div></div><div class="fdol"><span class="m">Arcada Concept sp. z o.o. · remonty obiektów zabytkowych</span><span class="m">NIP 665 305 91 60 · KRS 0001051640</span></div></div></footer><script>
+(function(){
+ var p=document.querySelectorAll('.portret');
+ if(!p.length) return;
+ if(window.matchMedia&&window.matchMedia('(hover:none)').matches) return;
+ p.forEach(function(e){
+  function ruch(ev){
+   var r=e.getBoundingClientRect();
+   e.style.setProperty('--px',(ev.clientX-r.left)+'px');
+   e.style.setProperty('--py',(ev.clientY-r.top)+'px');
+  }
+  e.addEventListener('pointerenter',function(ev){ruch(ev);e.classList.add('swieci');});
+  e.addEventListener('pointermove',ruch);
+  e.addEventListener('pointerleave',function(){e.classList.remove('swieci');});
+ });
+})();
+
 var b=document.getElementById('burger'),m=document.getElementById('mn');
 if(b&&m)b.addEventListener('click',function(){var o=m.classList.toggle('open');b.setAttribute('aria-expanded',o)});
 var ba=document.getElementById('ba');

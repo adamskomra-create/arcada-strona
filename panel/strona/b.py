@@ -107,24 +107,19 @@ a.inl{{display:inline-flex;align-items:center;min-height:44px;color:{ZIE};text-d
 .rece{{display:block;margin-top:10px;font-family:'PM';font-size:11px;letter-spacing:.13em;
  text-transform:uppercase;color:{MUT}}}
 .wpis.my .rece{{color:{ZIE}}}
-/* --- portret: łuk wymiata zdjęcie od dołu, jak kreska w sygnecie --- */
-@property --luk{{syntax:'<percentage>';inherits:false;initial-value:0%}}
-.portret{{position:relative;aspect-ratio:4/5;overflow:hidden;background:{SZA}}}
+/* --- portret: kursor prześwietla zdjęcie jak latarka, pod spodem łuki --- */
+@property --ps{{syntax:'<number>';inherits:true;initial-value:1}}
+.portret{{position:relative;aspect-ratio:4/5;overflow:hidden;background:{SZA};
+ --px:50%;--py:50%;--ps:1;cursor:crosshair}}
 .portret img{{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 18%}}
-.portret .foto{{--luk:0%;
- -webkit-mask-image:radial-gradient(circle at 50% 112%,
-   transparent 0 var(--luk), #000 calc(var(--luk) + 4%) 100%);
- mask-image:radial-gradient(circle at 50% 112%,
-   transparent 0 var(--luk), #000 calc(var(--luk) + 4%) 100%);
- transition:--luk .72s cubic-bezier(.33,1,.68,1)}}
-.portret:hover .foto,.portret:focus-within .foto{{--luk:132%}}
-.portret::after{{content:'';position:absolute;inset:0;pointer-events:none;
- background:radial-gradient(circle at 50% 112%,transparent 0 calc(var(--f,0%) - .5%),
-   {ZIE}2E calc(var(--f,0%) - .5%) calc(var(--f,0%) + .6%), transparent calc(var(--f,0%) + .6%));
- opacity:0;transition:opacity .25s}}
-.portret:hover::after{{opacity:1}}
-@media (hover:none){{.portret .foto{{--luk:0%!important}}}}
-@media (prefers-reduced-motion:reduce){{.portret .foto{{transition:none}}}}
+.portret .foto{{
+ -webkit-mask-image:radial-gradient(circle at var(--px) var(--py),
+   rgba(0,0,0,var(--ps)) 0 4mm, rgba(0,0,0,calc(var(--ps)*.45 + .55)) 7mm, #000 11mm);
+ mask-image:radial-gradient(circle at var(--px) var(--py),
+   rgba(0,0,0,var(--ps)) 0 4mm, rgba(0,0,0,calc(var(--ps)*.45 + .55)) 7mm, #000 11mm);
+ transition:--ps .2s linear}}
+.portret.swieci{{--ps:.26}}
+@media (hover:none){{.portret{{cursor:default}} .portret.swieci{{--ps:1}}}}
 .plakietka-demo{{display:inline-block;margin-top:14px;font-family:'PM';font-size:11.5px;
  letter-spacing:.14em;text-transform:uppercase;color:#6B4310;background:#FDF6EC;
  border:1px solid #EBD5B3;border-radius:3px;padding:5px 10px}}
@@ -174,6 +169,22 @@ footer a.inl{{color:{KREM};min-height:40px}}
 @media (prefers-reduced-motion:reduce){{html{{scroll-behavior:auto}}@view-transition{{navigation:none}}}}
 """
 JS=r"""
+(function(){
+ var p=document.querySelectorAll('.portret');
+ if(!p.length) return;
+ if(window.matchMedia&&window.matchMedia('(hover:none)').matches) return;
+ p.forEach(function(e){
+  function ruch(ev){
+   var r=e.getBoundingClientRect();
+   e.style.setProperty('--px',(ev.clientX-r.left)+'px');
+   e.style.setProperty('--py',(ev.clientY-r.top)+'px');
+  }
+  e.addEventListener('pointerenter',function(ev){ruch(ev);e.classList.add('swieci');});
+  e.addEventListener('pointermove',ruch);
+  e.addEventListener('pointerleave',function(){e.classList.remove('swieci');});
+ });
+})();
+
 var b=document.getElementById('burger'),m=document.getElementById('mn');
 if(b&&m)b.addEventListener('click',function(){var o=m.classList.toggle('open');b.setAttribute('aria-expanded',o)});
 var ba=document.getElementById('ba');
