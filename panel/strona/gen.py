@@ -323,7 +323,8 @@ def _galeria(o,wid=None,scisle=False):
     if not z and not scisle:
         z=[x for x in o['zdjecia'] if x['wpis_id'] is None and x['rola'] in ('detal','rysunek','dokument')]
     if not z: return ''
-    k=''.join(f'<figure><div style="aspect-ratio:4 / 5;overflow:hidden;background:{SZA}">'
+    def _ar(x): return '4 / 3' if x['rola'] in ('rysunek','dokument') else '4 / 5'
+    k=''.join(f'<figure><div style="aspect-ratio:{_ar(x)};overflow:hidden;background:{SZA}">'
               f'<img src="img/{x["plik"]}" alt="{x["alt"]}" loading="lazy" '
               f'style="object-position:{x["kadr"]}"></div>'
               f'<figcaption>{x["podpis"]}</figcaption></figure>' for x in z[:6])

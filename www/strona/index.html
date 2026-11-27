@@ -110,14 +110,14 @@ a.inl{display:inline-flex;align-items:center;min-height:44px;color:#1F5C4A;text-
  .wpis .g2{grid-template-columns:1fr!important}
 }
 /* --- os czasu obiektu --- */
-.os{position:relative;margin-top:40px;padding-left:168px}
-.os::before{content:'';position:absolute;left:84px;top:6px;bottom:6px;width:1px;background:#E6E9E7}
+.os{position:relative;margin-top:40px;padding-left:52px;padding-right:150px}
+.os::before{content:'';position:absolute;left:5px;top:6px;bottom:6px;width:1px;background:#E6E9E7}
 .wpis{position:relative;padding:26px 0 30px;border-top:1px solid #E6E9E7}
 .wpis:first-child{border-top:0;padding-top:4px}
-.wpis .data{position:absolute;left:-168px;top:27px;width:116px;text-align:right;font-family:'PM';font-size:17px;line-height:1.25;color:#15181A;white-space:nowrap}
+.wpis .data{position:absolute;left:auto;right:-150px;top:27px;width:134px;text-align:left;font-family:'PM';font-size:16px;line-height:1.25;color:#60666A;white-space:nowrap}
 .wpis .data.dl{font-size:14px;top:29px}
 .wpis:first-child .data{top:4px}
-.wpis .kr{position:absolute;left:-41px;top:32px;width:11px;height:11px;border-radius:50%;background:#fff;border:2px solid #C6CFCA}
+.wpis .kr{position:absolute;left:-52px;top:32px;width:11px;height:11px;border-radius:50%;background:#fff;border:2px solid #C6CFCA}
 .wpis:first-child .kr{top:10px}
 .wpis.my .kr{background:#1F5C4A;border-color:#1F5C4A;box-shadow:0 0 0 5px #E4EEE9}
 .wpis.my .data{color:#1F5C4A;font-weight:500}
@@ -224,11 +224,20 @@ a.inl{display:inline-flex;align-items:center;min-height:44px;color:#1F5C4A;text-
  border-bottom:2px solid #1F5C4A;transform:rotate(45deg);transition:transform .2s}
 .historia[open] .hist-strz{transform:rotate(-135deg)}
 .historia[open] summary{border-bottom:1px solid #E6E9E7;border-radius:18px 18px 0 0}
-.historia .os{padding:30px 26px 10px 196px}
+.historia .os{padding:30px 176px 10px 78px}
 @media(max-width:1100px){.ob-fakty{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:900px){.ob-fakty{grid-template-columns:1fr}
  .historia .os{padding:24px 18px 6px}
  .historia summary{flex-wrap:wrap;gap:6px 14px;padding:18px}}
+/* --- galeria wpisu: wychodzi poza kolumne tekstu, podpisy pod zdjeciami --- */
+.wpis .g3{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:24px;margin-right:-150px}
+.wpis .g3{align-items:start}
+.wpis .g3 figure{margin:0}
+.wpis .g3 figcaption{margin-top:10px;font-family:'PM';font-size:11.5px;letter-spacing:.08em;
+ text-transform:uppercase;color:#60666A;line-height:1.5}
+.nasze .wpis .g3{margin-right:0}
+.ciek-k .g3.ciek-g{margin-right:0}
+@media(max-width:900px){.wpis .g3,.nasze .wpis .g3{margin-right:0;grid-template-columns:repeat(2,minmax(0,1fr))}}
 /* --- ciekawostka: wyjety akapit z lupa --- */
 .wpis.ciek{border-top:0;padding:4px 0 26px}
 .wpis.ciek .kr{background:#fff;border-color:#1F5C4A}
@@ -250,10 +259,10 @@ a.inl{display:inline-flex;align-items:center;min-height:44px;color:#1F5C4A;text-
  background:#1F5C4A;color:#fff;font-family:'PM';font-size:12px;letter-spacing:.09em;text-transform:uppercase}
 .nasze .wpis{border-top-color:#DCE8E2}
 .nasze .wpis:first-of-type{border-top:0;padding-top:10px}
-.nasze .wpis .data{left:-196px}
-.nasze .wpis .kr{left:-69px}
+.nasze .wpis .data{right:-176px}
+.nasze .wpis .kr{left:-78px}
 @media(max-width:900px){.nasze{padding:14px 16px 8px}
- .nasze .wpis .data{left:auto} .nasze .wpis .kr{left:auto}}
+ .nasze .wpis .data{right:auto} .nasze .wpis .kr{left:auto}}
 
 .wpis.pusty .kr{border-style:dashed;border-color:#C6CFCA}
 .wpis h3{font-size:19px;font-weight:400;letter-spacing:-.015em}
