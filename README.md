@@ -13,15 +13,17 @@ pozostaje taka, jaka jest na serwerze, i nie podlega synchronizacji.
 
 - `index.html` - strona główna (sam znak)
 - `logo/` - wybór kroju napisu w logo
-- `strona/` - serwis wielostronicowy (sześć podstron), prawdziwe realizacje
-- `podglad/` - ten sam serwis z pięcioma obiektami fikcyjnymi, do pokazania
-  jak wygląda wypełnione portfolio; każdy obiekt ma widoczną plakietkę
+- `strona/` - serwis wielostronicowy; portfolio zawiera realizacje prawdziwe
+  (Kościelec, Dębno) oraz pięć obiektów fikcyjnych, każdy z widoczną plakietką
   „wizualizacja poglądowa · obiekt fikcyjny"
 - `ok/` - materiały pomocnicze
 - `og.jpg`, `robots.txt`
 
 ## Dane demo
 
-Pięć obiektów w `podglad/` nie istnieje. Służą wyłącznie do pokazania układu
+Pięć obiektów oznaczonych plakietką nie istnieje. Służą wyłącznie do pokazania układu
 portfolio, zanim przyjdą materiały z prawdziwych realizacji. Nie wolno ich
 przedstawiać jako referencji. Wszystkie strony mają `noindex`.
+
+Znikają w całości po kliknięciu „Usuń dane demo” w panelu i przebudowaniu
+strony. Realizacje prawdziwe zostają nietknięte.
