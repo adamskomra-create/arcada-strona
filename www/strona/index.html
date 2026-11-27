@@ -35,7 +35,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .zb{background:#143F33;color:#F2F5F3;position:relative;overflow:hidden;view-transition-name:zb}
 .zb .w{position:relative;z-index:1}
 .zb .in{padding:92px 0 104px;max-width:30em}
-.zb.maly .in{padding:56px 0 62px;max-width:34em}
+.zb.maly{min-height:324px;display:flex;align-items:center}
+.zb.maly > .w{width:100%}
+.zb.maly .in{padding:52px 0 56px;max-width:34em}
 .zb .m{color:rgba(242,245,243,.72)}
 .zb h1{font-size:clamp(36px,5vw,66px);font-weight:400;letter-spacing:-.035em;line-height:1.04;margin-top:18px}
 .zb.maly h1{font-size:clamp(28px,3.4vw,42px)}
@@ -284,6 +286,7 @@ footer a.inl{color:#F2F5F3;min-height:40px}
  nav.gl{display:none}.burger{display:inline-flex}.hin .btn{display:none}
  .w{padding:0 22px}.g3,.g2{grid-template-columns:1fr}
  main section{padding:56px 0}.zb .in{padding:60px 0 66px}
+ .zb.maly{min-height:auto}
  .zb .znak{right:-170px;width:420px;opacity:.9}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}@view-transition{navigation:none}}

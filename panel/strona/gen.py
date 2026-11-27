@@ -292,6 +292,13 @@ def zbuduj_pliki(out=None):
       open(f"{out}/{_plik_obiektu(o)}",'w',encoding='utf-8').write(
           strona('realizacje.html',tyt,op,zb,tr))
       n+=1
+  # narzedzie robocze: podglad na telefonie i tablecie
+  try:
+    from podglad import zbuduj as _podglad
+    open(f'{out}/podglad.html','w',encoding='utf-8').write(_podglad(OBIEKTY_Z_BAZY))
+    n+=1
+  except Exception as e:
+    print('podglad pominiety:',e)
   here=os.path.dirname(os.path.abspath(__file__))
   for k in ('img','fonts'):
     zrodlo=os.path.join(here,k)
